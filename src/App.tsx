@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Linkedin, Mail, Phone, MapPin, Download, Server, Cloud, Container, GitBranch, Terminal, Database } from 'lucide-react';
+import { Github, Linkedin, Mail, Phone, MapPin, Download, Server, Cloud, Container, GitBranch, Terminal, Database, Code, Globe, Smartphone, Lock, BarChart } from 'lucide-react';
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Ignatus Anim</h1>
-            <h2 className="text-2xl md:text-3xl mb-6">DevOps Engineer</h2>
+            <h2 className="text-2xl md:text-3xl mb-6">Software Engineer & DevOps Engineer</h2>
             <div className="flex flex-wrap gap-4 text-sm">
               <a href="mailto:ignatusa3@gmail.com" className="flex items-center gap-2">
                 <Mail size={16} /> ignatusa3@gmail.com
@@ -38,10 +38,11 @@ function App() {
           <section>
             <h2 className="text-2xl font-bold mb-4">Professional Summary</h2>
             <p className="text-gray-700 leading-relaxed">
-              DevOps Engineer with expertise in CI/CD automation, cloud infrastructure, and container orchestration. 
+              Software Engineer and DevOps Engineer with expertise in both software development and infrastructure management.
+              Proficient in building web applications with Node.js and React, creating mobile apps with React Native, and implementing
+              DevOps practices including CI/CD automation, cloud infrastructure, and container orchestration.
               Skilled in AWS, Terraform, Kubernetes, and Jenkins, with hands-on experience optimizing software 
-              delivery pipelines. Strong background in infrastructure automation, system monitoring, and security 
-              compliance.
+              delivery pipelines and developing scalable applications.
             </p>
           </section>
 
@@ -49,6 +50,39 @@ function App() {
           <section>
             <h2 className="text-2xl font-bold mb-6">Core Technologies</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <Code className="text-blue-600" />
+                  <h3 className="font-semibold">Backend Development</h3>
+                </div>
+                <ul className="text-gray-600 space-y-2">
+                  <li>Node.js, Express.js</li>
+                  <li>RESTful APIs, GraphQL</li>
+                  <li>Authentication & Authorization</li>
+                </ul>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <Globe className="text-blue-600" />
+                  <h3 className="font-semibold">Frontend Development</h3>
+                </div>
+                <ul className="text-gray-600 space-y-2">
+                  <li>React, Redux</li>
+                  <li>TypeScript, JavaScript</li>
+                  <li>HTML5, CSS3, Tailwind CSS</li>
+                </ul>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <Smartphone className="text-blue-600" />
+                  <h3 className="font-semibold">Mobile Development</h3>
+                </div>
+                <ul className="text-gray-600 space-y-2">
+                  <li>React Native</li>
+                  <li>Expo</li>
+                  <li>Mobile UI/UX</li>
+                </ul>
+              </div>
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                 <div className="flex items-center gap-3 mb-4">
                   <Cloud className="text-blue-600" />
@@ -88,20 +122,9 @@ function App() {
                   <h3 className="font-semibold">Scripting & Automation</h3>
                 </div>
                 <ul className="text-gray-600 space-y-2">
-                  <li>Python, Bash</li>
-                  <li>YAML, PowerShell</li>
-                  <li>Ansible</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <Server className="text-blue-600" />
-                  <h3 className="font-semibold">Monitoring & Logging</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>Prometheus, Grafana</li>
-                  <li>ELK Stack</li>
-                  <li>CloudWatch</li>
+                  <li>Python (Advanced)</li>
+                  <li>Bash, YAML, PowerShell</li>
+                  <li>Ansible, Terraform</li>
                 </ul>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
@@ -111,8 +134,30 @@ function App() {
                 </div>
                 <ul className="text-gray-600 space-y-2">
                   <li>PostgreSQL, MySQL</li>
-                  <li>DynamoDB, MongoDB</li>
-                  <li>S3, RDS</li>
+                  <li>MongoDB, DynamoDB</li>
+                  <li>Redis, S3</li>
+                </ul>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <BarChart className="text-blue-600" />
+                  <h3 className="font-semibold">Data Science & ML</h3>
+                </div>
+                <ul className="text-gray-600 space-y-2">
+                  <li>TensorFlow, PyTorch</li>
+                  <li>Computer Vision</li>
+                  <li>Crop Disease Detection</li>
+                </ul>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <Lock className="text-blue-600" />
+                  <h3 className="font-semibold">Security & Compliance</h3>
+                </div>
+                <ul className="text-gray-600 space-y-2">
+                  <li>IAM & Access Control</li>
+                  <li>Security Best Practices</li>
+                  <li>Compliance Frameworks</li>
                 </ul>
               </div>
             </div>
@@ -124,15 +169,16 @@ function App() {
             <div className="space-y-8">
               <div>
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold">DevOps Engineer</h3>
+                  <h3 className="text-xl font-semibold">Software Engineer & DevOps Engineer</h3>
                   <span className="text-gray-600">October 2024 – Present</span>
                 </div>
                 <h4 className="text-gray-700 mb-3">Amalitech | Kumasi, Ghana</h4>
                 <ul className="list-disc list-inside text-gray-600 space-y-2">
+                  <li>Developed and maintained web applications using Node.js, Express, and React</li>
+                  <li>Built mobile applications with React Native for cross-platform deployment</li>
                   <li>Designed and implemented CI/CD pipelines using Jenkins & GitHub Actions</li>
                   <li>Automated AWS infrastructure provisioning with Terraform & CloudFormation</li>
                   <li>Managed Kubernetes clusters (EKS) for containerized applications</li>
-                  <li>Implemented GitOps workflow with ArgoCD for continuous deployments</li>
                 </ul>
               </div>
               <div>
@@ -162,7 +208,10 @@ function App() {
                 <h3 className="text-xl font-semibold mb-4">Certifications</h3>
                 <ul className="list-disc list-inside text-gray-600 space-y-2">
                   <li>AWS Cloud Practitioner, AWS Academy Graduate (March 2025)</li>
+                  <li>Kubernetes and Cloud Native Associate (KCNA), Linux Foundation (2024)</li>
                   <li>Networking Essentials, Cisco Skills for All (2024)</li>
+                  <li>100 Days of Code: The Complete Python Pro Bootcamp, Udemy (2023)</li>
+                  <li>The Complete Full-Stack Web Development Bootcamp, Udemy (2023)</li>
                 </ul>
               </div>
             </div>
@@ -192,7 +241,7 @@ function App() {
       {/* Footer */}
       <footer className="bg-gray-100 py-8">
         <div className="container mx-auto px-4 text-center text-gray-600">
-          <p>© 2024 Ignatus Anim. All rights reserved.</p>
+          <p>© 2025 Ignatus Anim. All rights reserved.</p>
         </div>
       </footer>
     </div>

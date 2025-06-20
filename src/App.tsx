@@ -5,25 +5,28 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
+      <header className="bg-white border-b border-gray-100 py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Ignatus Anim</h1>
-            <h2 className="text-2xl md:text-3xl mb-6">Software Engineer & DevOps Engineer</h2>
-            <div className="flex flex-wrap gap-4 text-sm">
-              <a href="mailto:ignatusa3@gmail.com" className="flex items-center gap-2">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-50 mb-6">
+              <span className="text-blue-600 text-2xl font-bold">IA</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-green-500 to-red-400 text-transparent bg-clip-text">Ignatus Anim</h1>
+            <h2 className="text-2xl md:text-3xl mb-8 text-gray-700">Software Engineer & DevOps Engineer</h2>
+            <div className="flex flex-wrap justify-center gap-6 text-sm">
+              <a href="mailto:ignatusa3@gmail.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
                 <Mail size={16} /> ignatusa3@gmail.com
               </a>
-              <a href="tel:+233545565863" className="flex items-center gap-2">
+              <a href="tel:+233545565863" className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors">
                 <Phone size={16} /> +233545565863
               </a>
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 text-gray-600">
                 <MapPin size={16} /> Kumasi, Ghana
               </span>
-              <a href="https://www.linkedin.com/in/ignatus-anim-688a071a0/.com" className="flex items-center gap-2">
+              <a href="https://www.linkedin.com/in/ignatus-anim-688a071a0/.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
                 <Linkedin size={16} /> LinkedIn
               </a>
-              <a href="https://github.com/ignatus-anim" className="flex items-center gap-2">
+              <a href="https://github.com/ignatus-anim" className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors">
                 <Github size={16} /> GitHub
               </a>
             </div>
@@ -32,12 +35,16 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto space-y-12">
+      <main className="container mx-auto px-4 py-16">
+        <div className="max-w-5xl mx-auto space-y-20">
           {/* Summary */}
           <section>
-            <h2 className="text-2xl font-bold mb-4">Professional Summary</h2>
-            <p className="text-gray-700 leading-relaxed">
+            <div className="flex items-center justify-center mb-8">
+              <div className="h-1 w-16 bg-blue-400 rounded-full mr-4"></div>
+              <h2 className="text-2xl font-bold text-gray-800">Professional Summary</h2>
+              <div className="h-1 w-16 bg-blue-400 rounded-full ml-4"></div>
+            </div>
+            <p className="text-gray-700 leading-relaxed text-center max-w-3xl mx-auto text-lg">
               Software Engineer and DevOps Engineer with expertise in both software development and infrastructure management.
               Proficient in building web applications with Node.js and React, creating mobile apps with React Native, and implementing
               DevOps practices including CI/CD automation, cloud infrastructure, and container orchestration.
@@ -48,12 +55,18 @@ function App() {
 
           {/* Skills Grid */}
           <section>
-            <h2 className="text-2xl font-bold mb-6">Core Technologies</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <div className="flex items-center justify-center mb-12">
+              <div className="h-1 w-16 bg-green-400 rounded-full mr-4"></div>
+              <h2 className="text-2xl font-bold text-gray-800">Core Technologies</h2>
+              <div className="h-1 w-16 bg-green-400 rounded-full ml-4"></div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="skill-card group">
                 <div className="flex items-center gap-3 mb-4">
-                  <Code className="text-blue-600" />
-                  <h3 className="font-semibold">Backend Development</h3>
+                  <div className="skill-icon backend-icon">
+                    <Code size={20} />
+                  </div>
+                  <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">Backend Development</h3>
                 </div>
                 <ul className="text-gray-600 space-y-2">
                   <li>Node.js, Express.js</li>

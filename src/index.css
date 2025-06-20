@@ -1,3 +1,59 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50;
+  }
+}
+
+@layer components {
+  .skill-card {
+    @apply bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:border-gray-200;
+  }
+  
+  .skill-icon {
+    @apply p-2 rounded-lg;
+  }
+  
+  .backend-icon {
+    @apply bg-blue-50 text-blue-600;
+  }
+  
+  .frontend-icon {
+    @apply bg-green-50 text-green-600;
+  }
+  
+  .mobile-icon {
+    @apply bg-purple-50 text-purple-600;
+  }
+  
+  .cloud-icon {
+    @apply bg-cyan-50 text-cyan-600;
+  }
+  
+  .container-icon {
+    @apply bg-blue-50 text-blue-600;
+  }
+  
+  .cicd-icon {
+    @apply bg-amber-50 text-amber-600;
+  }
+  
+  .script-icon {
+    @apply bg-gray-50 text-gray-600;
+  }
+  
+  .db-icon {
+    @apply bg-indigo-50 text-indigo-600;
+  }
+  
+  .ml-icon {
+    @apply bg-green-50 text-green-600;
+  }
+  
+  .security-icon {
+    @apply bg-red-50 text-red-600;
+  }
+}

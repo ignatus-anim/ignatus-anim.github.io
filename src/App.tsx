@@ -280,9 +280,6 @@ function App() {
                         <span>☕</span> I automate everything, even my coffee brewing schedule!
                       </p>
                       <p className="flex items-center justify-center gap-2">
-                        <span>🚀</span> I've deployed over 100+ applications to production without breaking a sweat
-                      </p>
-                      <p className="flex items-center justify-center gap-2">
                         <span>🔧</span> My favorite debugging tool? A good night's sleep and fresh perspective
                       </p>
                       <p className="flex items-center justify-center gap-2">

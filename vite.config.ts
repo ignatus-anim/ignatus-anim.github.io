@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: 'ignatus-anim.github.io',  // Updated to match your repository name
+  base: '/',  // Root path for deployment
   optimizeDeps: {
     exclude: ['lucide-react'],
   },

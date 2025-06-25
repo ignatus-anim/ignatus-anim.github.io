@@ -1,254 +1,367 @@
-import React from 'react';
-import { Github, Linkedin, Mail, Phone, MapPin, Download, Server, Cloud, Container, GitBranch, Terminal, Database, Code, Globe, Smartphone, Lock, BarChart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Github, Linkedin, Mail, Phone, MapPin, Cloud, Container, GitBranch, Terminal, Database, Code, Globe, Smartphone, Lock, BarChart } from 'lucide-react';
+
+type Tab = 'home' | 'about' | 'skills' | 'services' | 'contact';
 
 function App() {
+  const [activeTab, setActiveTab] = useState<Tab>('home');
+
+  const tabs = [
+    { id: 'home' as Tab, label: 'Home' },
+    { id: 'about' as Tab, label: 'About' },
+    { id: 'skills' as Tab, label: 'Skills' },
+    { id: 'services' as Tab, label: 'Services' },
+    { id: 'contact' as Tab, label: 'Contact' }
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = tabs.map(tab => document.getElementById(tab.id));
+      const scrollPosition = window.scrollY + 100;
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveTab(tabs[i].id);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <header className="bg-white border-b border-gray-100 py-20">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-100 fixed top-0 w-full z-50">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-50 mb-6">
-              <span className="text-blue-600 text-2xl font-bold">IA</span>
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <img 
+                src="/profile_pic.jpg" 
+                alt="Ignatus Anim" 
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <span className="text-xl font-bold text-gray-800">Ignatus Anim</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-green-500 to-red-400 text-transparent bg-clip-text">Ignatus Anim</h1>
-            <h2 className="text-2xl md:text-3xl mb-8 text-gray-700">Software Engineer & DevOps Engineer</h2>
-            <div className="flex flex-wrap justify-center gap-6 text-sm">
-              <a href="mailto:ignatusa3@gmail.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                <Mail size={16} /> ignatusa3@gmail.com
-              </a>
-              <a href="tel:+233545565863" className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-colors">
-                <Phone size={16} /> +233545565863
-              </a>
-              <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 text-gray-600">
-                <MapPin size={16} /> Kumasi, Ghana
-              </span>
-              <a href="https://www.linkedin.com/in/ignatus-anim-688a071a0/.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                <Linkedin size={16} /> LinkedIn
-              </a>
-              <a href="https://github.com/ignatus-anim" className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors">
-                <Github size={16} /> GitHub
-              </a>
-            </div>
+            
+            {/* Tab Navigation */}
+            <nav className="flex gap-1">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => scrollToSection(tab.id)}
+                  className={`px-4 py-2 rounded-lg transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-16">
-        <div className="max-w-5xl mx-auto space-y-20">
-          {/* Summary */}
-          <section>
-            <div className="flex items-center justify-center mb-8">
-              <div className="h-1 w-16 bg-blue-400 rounded-full mr-4"></div>
-              <h2 className="text-2xl font-bold text-gray-800">Professional Summary</h2>
-              <div className="h-1 w-16 bg-blue-400 rounded-full ml-4"></div>
+      <main className="pt-20">
+        {/* Home Section */}
+        <section id="home" className="min-h-screen flex items-center justify-center bg-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <img 
+                src="/profile_pic.jpg" 
+                alt="Ignatus Anim" 
+                className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-blue-100"
+              />
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-green-500 to-red-400 text-transparent bg-clip-text">Ignatus Anim</h1>
+              <h2 className="text-2xl md:text-3xl mb-8 text-gray-700">Software Engineer & DevOps Engineer</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+                Passionate about building scalable applications and robust infrastructure. 
+                Specializing in full-stack development and cloud technologies.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button 
+                  onClick={() => scrollToSection('about')}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Learn More
+                </button>
+                <button 
+                  onClick={() => scrollToSection('contact')}
+                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Get In Touch
+                </button>
+              </div>
             </div>
-            <p className="text-gray-700 leading-relaxed text-center max-w-3xl mx-auto text-lg">
-              Software Engineer and DevOps Engineer with expertise in both software development and infrastructure management.
-              Proficient in building web applications with Node.js and React, creating mobile apps with React Native, and implementing
-              DevOps practices including CI/CD automation, cloud infrastructure, and container orchestration.
-              Skilled in AWS, Terraform, Kubernetes, and Jenkins, with hands-on experience optimizing software 
-              delivery pipelines and developing scalable applications.
-            </p>
-          </section>
+          </div>
+        </section>
 
-          {/* Skills Grid */}
-          <section>
-            <div className="flex items-center justify-center mb-12">
-              <div className="h-1 w-16 bg-green-400 rounded-full mr-4"></div>
-              <h2 className="text-2xl font-bold text-gray-800">Core Technologies</h2>
-              <div className="h-1 w-16 bg-green-400 rounded-full ml-4"></div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="skill-card group">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="skill-icon backend-icon">
-                    <Code size={20} />
+        {/* About Section */}
+        <section id="about" className="min-h-screen flex items-center bg-gray-50">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold mb-6">About Me</h2>
+                <p className="text-gray-700 leading-relaxed max-w-3xl mx-auto text-lg">
+                  Software Engineer and DevOps Engineer with expertise in both software development and infrastructure management.
+                  Proficient in building web applications with Node.js and React, creating mobile apps with React Native, and implementing
+                  DevOps practices including CI/CD automation, cloud infrastructure, and container orchestration.
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-semibold mb-4">Experience</h3>
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="font-semibold">Software Engineer & DevOps Engineer</h4>
+                      <p className="text-gray-600">Amalitech | Oct 2024 – Present</p>
+                      <p className="text-sm text-gray-600 mt-1">Full-stack development and infrastructure automation</p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">IT Technician (Internship)</h4>
+                      <p className="text-gray-600">Samartex Timber & Plywood | Aug 2023 – Dec 2023</p>
+                      <p className="text-sm text-gray-600 mt-1">Linux systems and network support</p>
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">Backend Development</h3>
                 </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>Node.js, Express.js</li>
-                  <li>RESTful APIs, GraphQL</li>
-                  <li>Authentication & Authorization</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <Globe className="text-blue-600" />
-                  <h3 className="font-semibold">Frontend Development</h3>
+                
+                <div>
+                  <h3 className="text-xl font-semibold mb-4">Education</h3>
+                  <div>
+                    <h4 className="font-semibold">BSc Computer Engineering, First Class</h4>
+                    <p className="text-gray-600">KNUST, 2024</p>
+                  </div>
+                  
+                  <h3 className="text-xl font-semibold mb-4 mt-6">Languages</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>English</span>
+                      <span className="text-gray-600">Fluent</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>German</span>
+                      <span className="text-gray-600">Basic</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>French</span>
+                      <span className="text-gray-600">Basic</span>
+                    </div>
+                  </div>
                 </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>React, Redux</li>
-                  <li>TypeScript, JavaScript</li>
-                  <li>HTML5, CSS3, Tailwind CSS</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <Smartphone className="text-blue-600" />
-                  <h3 className="font-semibold">Mobile Development</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>React Native</li>
-                  <li>Expo</li>
-                  <li>Mobile UI/UX</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <Cloud className="text-blue-600" />
-                  <h3 className="font-semibold">Cloud & Infrastructure</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>AWS (ECS, EKS, Lambda)</li>
-                  <li>GCP, Azure</li>
-                  <li>Terraform, CloudFormation</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <Container className="text-blue-600" />
-                  <h3 className="font-semibold">Containerization</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>Docker</li>
-                  <li>Kubernetes (EKS)</li>
-                  <li>Helm Charts</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <GitBranch className="text-blue-600" />
-                  <h3 className="font-semibold">CI/CD & Version Control</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>Jenkins, GitHub Actions</li>
-                  <li>ArgoCD, GitLab CI</li>
-                  <li>Git, GitOps</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <Terminal className="text-blue-600" />
-                  <h3 className="font-semibold">Scripting & Automation</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>Python (Advanced)</li>
-                  <li>Bash, YAML, PowerShell</li>
-                  <li>Ansible, Terraform</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <Database className="text-blue-600" />
-                  <h3 className="font-semibold">Databases & Storage</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>PostgreSQL, MySQL</li>
-                  <li>MongoDB, DynamoDB</li>
-                  <li>Redis, S3</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <BarChart className="text-blue-600" />
-                  <h3 className="font-semibold">Data Science & ML</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>TensorFlow, PyTorch</li>
-                  <li>Computer Vision</li>
-                  <li>Crop Disease Detection</li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <Lock className="text-blue-600" />
-                  <h3 className="font-semibold">Security & Compliance</h3>
-                </div>
-                <ul className="text-gray-600 space-y-2">
-                  <li>IAM & Access Control</li>
-                  <li>Security Best Practices</li>
-                  <li>Compliance Frameworks</li>
-                </ul>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Experience */}
-          <section>
-            <h2 className="text-2xl font-bold mb-6">Work Experience</h2>
-            <div className="space-y-8">
-              <div>
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold">Software Engineer & DevOps Engineer</h3>
-                  <span className="text-gray-600">October 2024 – Present</span>
+        {/* Skills Section */}
+        <section id="skills" className="min-h-screen flex items-center bg-white">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12">Technical Skills</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Code className="text-blue-600" />
+                    <h3 className="font-semibold">Backend Development</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>Node.js, Express.js</li>
+                    <li>RESTful APIs, GraphQL</li>
+                    <li>Authentication & Authorization</li>
+                  </ul>
                 </div>
-                <h4 className="text-gray-700 mb-3">Amalitech | Kumasi, Ghana</h4>
-                <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>Developed and maintained web applications using Node.js, Express, and React</li>
-                  <li>Built mobile applications with React Native for cross-platform deployment</li>
-                  <li>Designed and implemented CI/CD pipelines using Jenkins & GitHub Actions</li>
-                  <li>Automated AWS infrastructure provisioning with Terraform & CloudFormation</li>
-                  <li>Managed Kubernetes clusters (EKS) for containerized applications</li>
-                </ul>
-              </div>
-              <div>
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold">IT Technician (Internship)</h3>
-                  <span className="text-gray-600">August 2023 – December 2023</span>
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Globe className="text-blue-600" />
+                    <h3 className="font-semibold">Frontend Development</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>React, Redux</li>
+                    <li>TypeScript, JavaScript</li>
+                    <li>HTML5, CSS3, Tailwind CSS</li>
+                  </ul>
                 </div>
-                <h4 className="text-gray-700 mb-3">Samartex Timber & Plywood Company Limited</h4>
-                <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>Provided technical support for Linux-based systems and IT infrastructure</li>
-                  <li>Assisted in network troubleshooting and server maintenance</li>
-                  <li>Configured user access policies and security protocols</li>
-                </ul>
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Smartphone className="text-blue-600" />
+                    <h3 className="font-semibold">Mobile Development</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>React Native</li>
+                    <li>Expo</li>
+                    <li>Mobile UI/UX</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Cloud className="text-blue-600" />
+                    <h3 className="font-semibold">Cloud & Infrastructure</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>AWS (ECS, EKS, Lambda)</li>
+                    <li>GCP, Azure</li>
+                    <li>Terraform, CloudFormation</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Container className="text-blue-600" />
+                    <h3 className="font-semibold">DevOps & Automation</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>Docker, Kubernetes</li>
+                    <li>Jenkins, GitHub Actions</li>
+                    <li>Python, Bash</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Database className="text-blue-600" />
+                    <h3 className="font-semibold">Databases</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>PostgreSQL, MySQL</li>
+                    <li>MongoDB, DynamoDB</li>
+                    <li>Redis, S3</li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Education & Certifications */}
-          <section>
-            <h2 className="text-2xl font-bold mb-6">Education & Certifications</h2>
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-semibold mb-2">BSc Computer Engineering, First Class</h3>
-                <p className="text-gray-700">Kwame Nkrumah University of Science and Technology (KNUST), 2024</p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Certifications</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>AWS Cloud Practitioner, AWS Academy Graduate (March 2025)</li>
-                  <li>Kubernetes and Cloud Native Associate (KCNA), Linux Foundation (2024)</li>
-                  <li>Networking Essentials, Cisco Skills for All (2024)</li>
-                  <li>100 Days of Code: The Complete Python Pro Bootcamp, Udemy (2023)</li>
-                  <li>The Complete Full-Stack Web Development Bootcamp, Udemy (2023)</li>
-                </ul>
+        {/* Services Section */}
+        <section id="services" className="min-h-screen flex items-center bg-gray-50">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12">Services</h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                  <Globe className="text-blue-600 mb-4" size={32} />
+                  <h3 className="text-xl font-semibold mb-4">Web Development</h3>
+                  <p className="text-gray-600 mb-4">
+                    Full-stack web applications using modern technologies like React, Node.js, and cloud services.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Responsive web applications</li>
+                    <li>• RESTful API development</li>
+                    <li>• Database design & optimization</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                  <Smartphone className="text-blue-600 mb-4" size={32} />
+                  <h3 className="text-xl font-semibold mb-4">Mobile Development</h3>
+                  <p className="text-gray-600 mb-4">
+                    Cross-platform mobile applications using React Native for iOS and Android.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Cross-platform development</li>
+                    <li>• Native performance optimization</li>
+                    <li>• App store deployment</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                  <Cloud className="text-blue-600 mb-4" size={32} />
+                  <h3 className="text-xl font-semibold mb-4">Cloud Infrastructure</h3>
+                  <p className="text-gray-600 mb-4">
+                    AWS cloud infrastructure setup, automation, and optimization for scalable applications.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Infrastructure as Code</li>
+                    <li>• Auto-scaling & load balancing</li>
+                    <li>• Cost optimization</li>
+                  </ul>
+                </div>
+                
+                <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                  <GitBranch className="text-blue-600 mb-4" size={32} />
+                  <h3 className="text-xl font-semibold mb-4">DevOps & CI/CD</h3>
+                  <p className="text-gray-600 mb-4">
+                    Automated deployment pipelines, containerization, and infrastructure monitoring.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• CI/CD pipeline setup</li>
+                    <li>• Docker & Kubernetes</li>
+                    <li>• Monitoring & logging</li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Languages */}
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Languages</h2>
-            <div className="flex gap-6">
-              <div>
-                <span className="font-semibold">English</span>
-                <span className="text-gray-600 ml-2">Fluent</span>
-              </div>
-              <div>
-                <span className="font-semibold">German</span>
-                <span className="text-gray-600 ml-2">Basic</span>
-              </div>
-              <div>
-                <span className="font-semibold">French</span>
-                <span className="text-gray-600 ml-2">Basic</span>
+        {/* Contact Section */}
+        <section id="contact" className="min-h-screen flex items-center bg-white">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12">Get In Touch</h2>
+              <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Mail className="text-blue-600" />
+                    <div>
+                      <p className="font-semibold">Email</p>
+                      <a href="mailto:ignatusa3@gmail.com" className="text-blue-600 hover:underline">
+                        ignatusa3@gmail.com
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <Phone className="text-blue-600" />
+                    <div>
+                      <p className="font-semibold">Phone</p>
+                      <a href="tel:+233545565863" className="text-blue-600 hover:underline">
+                        +233545565863
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <MapPin className="text-blue-600" />
+                    <div>
+                      <p className="font-semibold">Location</p>
+                      <p className="text-gray-600">Kumasi, Ghana</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <Linkedin className="text-blue-600" />
+                    <div>
+                      <p className="font-semibold">LinkedIn</p>
+                      <a href="https://www.linkedin.com/in/ignatus-anim-688a071a0/" target="_blank" className="text-blue-600 hover:underline">
+                        Connect with me
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <Github className="text-blue-600" />
+                    <div>
+                      <p className="font-semibold">GitHub</p>
+                      <a href="https://github.com/ignatus-anim" target="_blank" className="text-blue-600 hover:underline">
+                        View my projects
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}

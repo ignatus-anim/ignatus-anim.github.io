@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Mail, Phone, MapPin, Cloud, Container, GitBranch, Terminal, Database, Code, Lock, BarChart, Monitor, Settings, FileText, Download } from 'lucide-react';
+import { Github, Linkedin, Mail, Phone, MapPin, Cloud, Container, GitBranch, Terminal, Database, Code, Lock, BarChart, Monitor, Settings, FileText, Download, Menu, X } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
@@ -7,6 +7,7 @@ type Tab = 'home' | 'about' | 'skills' | 'experience' | 'education' | 'services'
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('home');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const generateCV = () => {
     // @ts-ignore - jsPDF types
@@ -150,9 +151,20 @@ function App() {
       }
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (isMobileMenuOpen && !target.closest('header')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
 
   const scrollToSection = (sectionId: string) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
@@ -168,18 +180,18 @@ function App() {
               <img 
                 src="/profile_pic.jpg" 
                 alt="Ignatus Anim" 
-                className="w-10 h-10 rounded-full object-cover"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
               />
-              <span className="text-xl font-bold text-gray-800">Ignatus Anim</span>
+              <span className="text-lg sm:text-xl font-bold text-gray-800">Ignatus Anim</span>
             </div>
             
-            {/* Tab Navigation */}
-            <nav className="flex gap-1">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex gap-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => scrollToSection(tab.id)}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
+                  className={`px-3 lg:px-4 py-2 rounded-lg transition-colors text-sm lg:text-base ${
                     activeTab === tab.id
                       ? 'bg-blue-600 text-white'
                       : 'text-gray-600 hover:bg-gray-100'
@@ -189,7 +201,39 @@ function App() {
                 </button>
               ))}
             </nav>
+            
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
+          
+          {/* Mobile Navigation */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden border-t border-gray-100 py-4">
+              <nav className="flex flex-col gap-2">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      scrollToSection(tab.id);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`px-4 py-3 rounded-lg transition-colors text-left ${
+                      activeTab === tab.id
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 
@@ -200,43 +244,43 @@ function App() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               {/* Enhanced Profile Image */}
-              <div className="mb-8">
+              <div className="mb-6 sm:mb-8">
                 <div className="relative inline-block">
-                  <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-2xl">
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-2xl">
                     <img 
                       src="/profile_pic.jpg" 
                       alt="Ignatus Anim" 
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white"></div>
+                  <div className="absolute -bottom-2 -right-2 w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full border-4 border-white"></div>
                 </div>
               </div>
               
-              <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ignatus Anim</h1>
-              <h2 className="text-2xl md:text-3xl mb-8 text-gray-700">DevOps Engineer & Cloud Specialist</h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ignatus Anim</h1>
+              <h2 className="text-xl sm:text-2xl md:text-3xl mb-6 sm:mb-8 text-gray-700">DevOps Engineer & Cloud Specialist</h2>
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
                 Passionate about building robust infrastructure and automating deployment pipelines. 
                 Specializing in cloud technologies, containerization, and CI/CD automation.
               </p>
-              <div className="flex justify-center gap-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-4">
                 <button 
                   onClick={() => scrollToSection('about')}
-                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="px-6 sm:px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                 >
                   Learn More
                 </button>
                 <button 
                   onClick={() => scrollToSection('contact')}
-                  className="px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105"
+                  className="px-6 sm:px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
                 >
                   Get In Touch
                 </button>
                 <button 
                   onClick={generateCV}
-                  className="px-8 py-3 flex items-center justify-center gap-2 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105"
+                  className="px-6 sm:px-8 py-3 flex items-center justify-center gap-2 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
                 >
-                  <FileText size={18} />
+                  <FileText size={16} className="sm:w-[18px] sm:h-[18px]" />
                   Get CV
                 </button>
               </div>
@@ -249,9 +293,9 @@ function App() {
           <div className="container mx-auto px-4 py-20">
             <div className="max-w-5xl mx-auto space-y-12">
               <div className="text-center">
-                <h2 className="text-3xl font-bold mb-6">About Me</h2>
-                <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 max-w-4xl mx-auto">
-                  <p className="text-gray-700 leading-relaxed text-lg mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-6">About Me</h2>
+                <div className="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 max-w-4xl mx-auto">
+                  <p className="text-gray-700 leading-relaxed text-base sm:text-lg mb-6">
                     I'm a passionate DevOps Engineer who thrives on transforming complex infrastructure challenges into elegant, automated solutions. 
                     With expertise in cloud technologies and modern deployment practices, I help organizations scale efficiently while maintaining reliability. 
                     My mission is to bridge the gap between development and operations, creating seamless workflows that accelerate innovation. 
@@ -259,9 +303,9 @@ function App() {
                   </p>
                   
                   {/* Key Skills Highlight */}
-                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg mb-6">
-                    <h3 className="text-lg font-semibold mb-3 text-center">Core Expertise</h3>
-                    <div className="flex flex-wrap justify-center gap-3">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 sm:p-6 rounded-lg mb-6">
+                    <h3 className="text-base sm:text-lg font-semibold mb-3 text-center">Core Expertise</h3>
+                    <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
                       <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">AWS</span>
                       <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">Kubernetes</span>
                       <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">Terraform</span>
@@ -273,9 +317,9 @@ function App() {
                   </div>
                   
                   {/* Fun Facts */}
-                  <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-3 text-center">Fun Facts</h3>
-                    <div className="space-y-2 text-gray-700">
+                  <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 sm:p-6 rounded-lg">
+                    <h3 className="text-base sm:text-lg font-semibold mb-3 text-center">Fun Facts</h3>
+                    <div className="space-y-2 text-sm sm:text-base text-gray-700">
                       <p className="flex items-center justify-center gap-2">
                         <span>☕</span> I automate everything, even my coffee brewing schedule!
                       </p>
@@ -302,13 +346,13 @@ function App() {
         <section id="skills" className="min-h-screen flex items-center bg-gradient-to-br from-gray-50 to-blue-50">
           <div className="container mx-auto px-4 py-20">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-4">Technical Skills</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Technical Skills</h2>
               <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
                 Expertise in modern DevOps tools and cloud technologies
               </p>
               
               {/* Technology Icons Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-16">
                 <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   <div className="flex flex-col items-center">
                     <img src="/assets/aws.svg" alt="AWS" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
@@ -359,7 +403,7 @@ function App() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-blue-100 rounded-lg">
@@ -476,38 +520,38 @@ function App() {
         <section id="experience" className="min-h-screen flex items-center bg-white">
           <div className="container mx-auto px-4 py-20">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-4">Professional Experience</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Professional Experience</h2>
               <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
                 My journey in DevOps and cloud infrastructure
               </p>
               
               <div className="space-y-12">
                 {/* Job 1 */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl shadow-sm border border-blue-200 hover:shadow-lg transition-all duration-300">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-blue-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 sm:mb-6">
                     <div>
-                      <h3 className="text-xl font-bold">DevOps Engineer</h3>
+                      <h3 className="text-lg sm:text-xl font-bold">DevOps Engineer</h3>
                       <p className="text-blue-600 font-medium">Amalitech</p>
                     </div>
                     <p className="text-gray-600 mt-2 md:mt-0">October 2024 - Present</p>
                   </div>
-                  <p className="text-gray-700 mb-6">
+                  <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
                     Leading infrastructure automation and cloud deployment initiatives, focusing on scalable and secure solutions.
                   </p>
-                  <div className="space-y-3">
-                    <p className="flex items-start gap-2">
+                  <div className="space-y-2 sm:space-y-3">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-blue-600 font-bold">•</span>
                       Designed and implemented CI/CD pipelines using Jenkins and GitHub Actions, reducing deployment time by 40%
                     </p>
-                    <p className="flex items-start gap-2">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-blue-600 font-bold">•</span>
                       Managed AWS infrastructure using Terraform, ensuring infrastructure as code best practices
                     </p>
-                    <p className="flex items-start gap-2">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-blue-600 font-bold">•</span>
                       Implemented container security scanning and vulnerability management across the deployment pipeline
                     </p>
-                    <p className="flex items-start gap-2">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-blue-600 font-bold">•</span>
                       Set up comprehensive monitoring using Prometheus and Grafana for real-time system observability
                     </p>
@@ -522,31 +566,31 @@ function App() {
                 </div>
                 
                 {/* Job 2 */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl shadow-sm border border-green-200 hover:shadow-lg transition-all duration-300">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-green-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 sm:mb-6">
                     <div>
-                      <h3 className="text-xl font-bold">IT Technician (Internship)</h3>
+                      <h3 className="text-lg sm:text-xl font-bold">IT Technician (Internship)</h3>
                       <p className="text-green-600 font-medium">Samartex Timber & Plywood</p>
                     </div>
                     <p className="text-gray-600 mt-2 md:mt-0">August 2023 - December 2023</p>
                   </div>
-                  <p className="text-gray-700 mb-6">
+                  <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
                     Provided technical support and maintained Linux systems and network infrastructure.
                   </p>
-                  <div className="space-y-3">
-                    <p className="flex items-start gap-2">
+                  <div className="space-y-2 sm:space-y-3">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-green-600 font-bold">•</span>
                       Managed and maintained Linux servers, ensuring high availability and security
                     </p>
-                    <p className="flex items-start gap-2">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-green-600 font-bold">•</span>
                       Implemented network monitoring solutions to improve system reliability
                     </p>
-                    <p className="flex items-start gap-2">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-green-600 font-bold">•</span>
                       Automated routine maintenance tasks using Bash scripting
                     </p>
-                    <p className="flex items-start gap-2">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-green-600 font-bold">•</span>
                       Provided technical support and troubleshooting for company staff
                     </p>
@@ -560,13 +604,13 @@ function App() {
                 </div>
                 
                 {/* Projects Section */}
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-xl shadow-sm border border-purple-200 hover:shadow-lg transition-all duration-300">
-                  <h3 className="text-xl font-bold mb-6">Notable Projects</h3>
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-purple-200 hover:shadow-lg transition-all duration-300">
+                  <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Notable Projects</h3>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     <div>
-                      <h4 className="font-semibold text-purple-700">Disaster Recovery using Pilot Light Strategy</h4>
-                      <p className="text-gray-700 mt-2">
+                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Disaster Recovery using Pilot Light Strategy</h4>
+                      <p className="text-sm sm:text-base text-gray-700 mt-2">
                         Implemented a disaster recovery solution using AWS Pilot Light architecture to ensure business continuity
                         with minimal downtime and data loss during regional outages.
                       </p>
@@ -576,8 +620,8 @@ function App() {
                     </div>
                     
                     <div>
-                      <h4 className="font-semibold text-purple-700">Serverless Task Management Application</h4>
-                      <p className="text-gray-700 mt-2">
+                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Serverless Task Management Application</h4>
+                      <p className="text-sm sm:text-base text-gray-700 mt-2">
                         Developed a serverless application using AWS Lambda, API Gateway, DynamoDB, and SES for efficient
                         task management with automated notifications and scalable backend.
                       </p>
@@ -587,8 +631,8 @@ function App() {
                     </div>
                     
                     <div>
-                      <h4 className="font-semibold text-purple-700">Microservices Deployment using EKS</h4>
-                      <p className="text-gray-700 mt-2">
+                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Microservices Deployment using EKS</h4>
+                      <p className="text-sm sm:text-base text-gray-700 mt-2">
                         Architected and deployed a microservices-based application on Amazon EKS, implementing service discovery,
                         load balancing, and auto-scaling for improved reliability and performance.
                       </p>
@@ -604,7 +648,7 @@ function App() {
         <section id="education" className="min-h-screen flex items-center bg-gradient-to-br from-indigo-50 to-purple-50">
           <div className="container mx-auto px-4 py-20">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-4">Education</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Education</h2>
               <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
                 My academic journey and qualifications
               </p>
@@ -750,17 +794,17 @@ function App() {
         <section id="services" className="min-h-screen flex items-center bg-white">
           <div className="container mx-auto px-4 py-20">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-4">Services</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Services</h2>
               <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
                 Professional DevOps and cloud infrastructure services to accelerate your business
               </p>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="group bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl shadow-sm border border-blue-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                <div className="group bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-blue-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   <div className="p-3 bg-blue-600 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
                     <Cloud className="text-white" size={32} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">Cloud Infrastructure</h3>
-                  <p className="text-gray-600 mb-4">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4">Cloud Infrastructure</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
                     Design and implement scalable cloud infrastructure on AWS, GCP, and Azure with cost optimization.
                   </p>
                   <ul className="text-sm text-gray-600 space-y-1">
@@ -770,12 +814,12 @@ function App() {
                   </ul>
                 </div>
                 
-                <div className="group bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl shadow-sm border border-green-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                <div className="group bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-green-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   <div className="p-3 bg-green-600 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
                     <GitBranch className="text-white" size={32} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">CI/CD Pipeline Setup</h3>
-                  <p className="text-gray-600 mb-4">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4">CI/CD Pipeline Setup</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
                     Automated deployment pipelines with testing, security scanning, and deployment automation.
                   </p>
                   <ul className="text-sm text-gray-600 space-y-1">
@@ -785,12 +829,12 @@ function App() {
                   </ul>
                 </div>
                 
-                <div className="group bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-xl shadow-sm border border-purple-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                <div className="group bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-purple-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   <div className="p-3 bg-purple-600 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
                     <Container className="text-white" size={32} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">Containerization & Orchestration</h3>
-                  <p className="text-gray-600 mb-4">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4">Containerization & Orchestration</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
                     Docker containerization and Kubernetes orchestration for scalable microservices architecture.
                   </p>
                   <ul className="text-sm text-gray-600 space-y-1">
@@ -800,12 +844,12 @@ function App() {
                   </ul>
                 </div>
                 
-                <div className="group bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-xl shadow-sm border border-orange-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                <div className="group bg-gradient-to-br from-orange-50 to-orange-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-orange-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                   <div className="p-3 bg-orange-600 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
                     <Monitor className="text-white" size={32} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">Monitoring & Observability</h3>
-                  <p className="text-gray-600 mb-4">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4">Monitoring & Observability</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
                     Comprehensive monitoring solutions with alerting, logging, and performance optimization.
                   </p>
                   <ul className="text-sm text-gray-600 space-y-1">
@@ -823,71 +867,71 @@ function App() {
         <section id="contact" className="min-h-screen flex items-center bg-gradient-to-br from-gray-50 to-blue-50">
           <div className="container mx-auto px-4 py-20">
             <div className="max-w-2xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-4">Get In Touch</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Get In Touch</h2>
               <p className="text-gray-600 text-center mb-12">
                 Ready to discuss your next project? Let's connect!
               </p>
-              <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="p-2 bg-blue-100 rounded-lg">
                       <Mail className="text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-semibold">Email</p>
+                      <p className="text-sm sm:text-base font-semibold">Email</p>
                       <a href="mailto:ignatusa3@gmail.com" className="text-blue-600 hover:underline">
                         ignatusa3@gmail.com
                       </a>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="p-2 bg-green-100 rounded-lg">
                       <Phone className="text-green-600" />
                     </div>
                     <div>
-                      <p className="font-semibold">Phone</p>
+                      <p className="text-sm sm:text-base font-semibold">Phone</p>
                       <a href="tel:+233545565863" className="text-green-600 hover:underline">
                         +233545565863
                       </a>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="p-2 bg-red-100 rounded-lg">
                       <MapPin className="text-red-600" />
                     </div>
                     <div>
-                      <p className="font-semibold">Location</p>
+                      <p className="text-sm sm:text-base font-semibold">Location</p>
                       <p className="text-gray-600">Kumasi, Ghana</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="p-2 bg-blue-100 rounded-lg">
                       <Linkedin className="text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-semibold">LinkedIn</p>
+                      <p className="text-sm sm:text-base font-semibold">LinkedIn</p>
                       <a href="https://www.linkedin.com/in/ignatus-anim-688a071a0/" target="_blank" className="text-blue-600 hover:underline">
                         Connect with me
                       </a>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="p-2 bg-gray-100 rounded-lg">
                       <Github className="text-gray-700" />
                     </div>
                     <div>
-                      <p className="font-semibold">GitHub</p>
+                      <p className="text-sm sm:text-base font-semibold">GitHub</p>
                       <a href="https://github.com/ignatus-anim" target="_blank" className="text-gray-700 hover:underline">
                         View my projects
                       </a>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="p-2 bg-purple-100 rounded-lg">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-600">
                         <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path>
@@ -896,7 +940,7 @@ function App() {
                       </svg>
                     </div>
                     <div>
-                      <p className="font-semibold">Blog</p>
+                      <p className="text-sm sm:text-base font-semibold">Blog</p>
                       <a href="https://medium.com/@ignatusa3" target="_blank" className="text-purple-600 hover:underline">
                         Read my articles on Medium
                       </a>

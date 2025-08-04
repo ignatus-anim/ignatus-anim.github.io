@@ -3,7 +3,7 @@ import { Github, Linkedin, Mail, Phone, MapPin, Cloud, Container, GitBranch, Ter
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
-type Tab = 'home' | 'about' | 'skills' | 'experience' | 'education' | 'services' | 'contact';
+type Tab = 'home' | 'about' | 'skills' | 'experience' | 'projects' | 'education' | 'certifications' | 'services' | 'contact';
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('home');
@@ -93,35 +93,36 @@ function App() {
     
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.text('• AWS Certified Cloud Practitioner | Amazon Web Services | March 2025', 20, 177);
-    doc.text('• Certified Kubernetes Administrator | Cloud Native Computing Foundation | August 2023', 20, 182);
+    doc.text('• AWS Certified Solutions Architect – Associate | Amazon Web Services | July 2025', 20, 177);
+    doc.text('• AWS Certified Cloud Practitioner | Amazon Web Services | March 2025', 20, 182);
+    doc.text('• Kubernetes and Cloud Native Associate (KCNA) | The Linux Foundation | May 2025', 20, 187);
     
     // Skills
     doc.setFontSize(12);
     doc.setTextColor(0, 51, 102);
-    doc.text('Technical Skills', 20, 192);
+    doc.text('Technical Skills', 20, 197);
     doc.setDrawColor(0, 51, 102);
-    doc.line(20, 194, 190, 194);
+    doc.line(20, 199, 190, 199);
     
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.text('• Cloud: AWS, GCP, Azure, Lambda, EC2, EKS', 20, 200);
-    doc.text('• Containerization: Docker, Kubernetes, Helm', 20, 205);
-    doc.text('• CI/CD: Jenkins, GitHub Actions, GitLab CI', 20, 210);
-    doc.text('• IaC: Terraform, CloudFormation, Ansible', 20, 215);
-    doc.text('• Monitoring: Prometheus, Grafana, ELK Stack', 20, 220);
-    doc.text('• Languages: Python, Bash', 20, 225);
+    doc.text('• Cloud: AWS, GCP, Azure, Lambda, EC2, EKS', 20, 205);
+    doc.text('• Containerization: Docker, Kubernetes, Helm', 20, 210);
+    doc.text('• CI/CD: Jenkins, GitHub Actions, GitLab CI', 20, 215);
+    doc.text('• IaC: Terraform, CloudFormation, Ansible', 20, 220);
+    doc.text('• Monitoring: Prometheus, Grafana, ELK Stack', 20, 225);
+    doc.text('• Languages: Python, Bash', 20, 230);
     
     // Languages
     doc.setFontSize(12);
     doc.setTextColor(0, 51, 102);
-    doc.text('Languages', 20, 235);
+    doc.text('Languages', 20, 240);
     doc.setDrawColor(0, 51, 102);
-    doc.line(20, 237, 190, 237);
+    doc.line(20, 242, 190, 242);
     
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.text('English (Fluent), German (Basic), French (Basic)', 20, 243);
+    doc.text('English (Fluent), German (Basic), French (Basic)', 20, 248);
     
     // Save the PDF
     doc.save('Ignatus_Anim_CV.pdf');
@@ -132,7 +133,9 @@ function App() {
     { id: 'about' as Tab, label: 'About' },
     { id: 'skills' as Tab, label: 'Skills' },
     { id: 'experience' as Tab, label: 'Experience' },
+    { id: 'projects' as Tab, label: 'Projects' },
     { id: 'education' as Tab, label: 'Education' },
+    { id: 'certifications' as Tab, label: 'Certifications' },
     { id: 'services' as Tab, label: 'Services' },
     { id: 'contact' as Tab, label: 'Contact' }
   ];
@@ -603,47 +606,131 @@ function App() {
                   </div>
                 </div>
                 
-                {/* Projects Section */}
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-purple-200 hover:shadow-lg transition-all duration-300">
-                  <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Notable Projects</h3>
-                  
-                  <div className="space-y-4 sm:space-y-6">
-                    <div>
-                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Disaster Recovery using Pilot Light Strategy</h4>
-                      <p className="text-sm sm:text-base text-gray-700 mt-2">
-                        Implemented a disaster recovery solution using AWS Pilot Light architecture to ensure business continuity
-                        with minimal downtime and data loss during regional outages.
-                      </p>
-                      <a href="https://github.com/ignatus-anim/nebula-pilot-light-disaster-recovery" target="_blank" className="text-blue-600 hover:underline text-sm mt-1 inline-block">
-                        View on GitHub
-                      </a>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Projects Section */}
+        <section id="projects" className="min-h-screen flex items-center bg-gradient-to-br from-purple-50 to-pink-50">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Featured Projects</h2>
+              <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                Showcasing real-world applications of DevOps, MLOps, and cloud technologies
+              </p>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* MLOps Pipeline Project */}
+                <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg">
+                      <BarChart className="text-white" size={28} />
                     </div>
-                    
                     <div>
-                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Serverless Task Management Application</h4>
-                      <p className="text-sm sm:text-base text-gray-700 mt-2">
-                        Developed a serverless application using AWS Lambda, API Gateway, DynamoDB, and SES for efficient
-                        task management with automated notifications and scalable backend.
-                      </p>
-                      <a href="https://github.com/ignatus-anim/taskflow-frontend" target="_blank" className="text-blue-600 hover:underline text-sm mt-1 inline-block">
-                        View on GitHub
-                      </a>
+                      <h3 className="text-xl font-bold">MLOps Pipeline</h3>
+                      <p className="text-gray-600">Bangalore Home Prices</p>
                     </div>
-                    
+                  </div>
+                  <p className="text-gray-700 mb-4">
+                    Production-ready MLOps pipeline with automated training, A/B testing, and intelligent rollbacks.
+                    Achieved 100% test coverage and zero-downtime deployments.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded">Apache Airflow</span>
+                    <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded">MLflow</span>
+                    <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded">A/B Testing</span>
+                    <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded">Prometheus</span>
+                  </div>
+                  <a href="https://github.com/ignatus-anim/mlops" target="_blank" className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium">
+                    <Github size={16} />
+                    View on GitHub
+                  </a>
+                </div>
+                
+                {/* Disaster Recovery Project */}
+                <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg">
+                      <Cloud className="text-white" size={28} />
+                    </div>
                     <div>
-                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Microservices Deployment using EKS</h4>
-                      <p className="text-sm sm:text-base text-gray-700 mt-2">
-                        Architected and deployed a microservices-based application on Amazon EKS, implementing service discovery,
-                        load balancing, and auto-scaling for improved reliability and performance.
-                      </p>
+                      <h3 className="text-xl font-bold">Disaster Recovery</h3>
+                      <p className="text-gray-600">Pilot Light Strategy</p>
                     </div>
+                  </div>
+                  <p className="text-gray-700 mb-4">
+                    AWS Pilot Light disaster recovery solution ensuring business continuity with minimal downtime
+                    and data loss during regional outages.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">AWS</span>
+                    <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">Disaster Recovery</span>
+                    <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">High Availability</span>
+                  </div>
+                  <a href="https://github.com/ignatus-anim/nebula-pilot-light-disaster-recovery" target="_blank" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
+                    <Github size={16} />
+                    View on GitHub
+                  </a>
+                </div>
+                
+                {/* Serverless Task Management */}
+                <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-gradient-to-br from-green-600 to-teal-600 rounded-lg">
+                      <Terminal className="text-white" size={28} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">Serverless Task Manager</h3>
+                      <p className="text-gray-600">Full-Stack Application</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 mb-4">
+                    Serverless application using AWS Lambda, API Gateway, DynamoDB, and SES for efficient
+                    task management with automated notifications.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">AWS Lambda</span>
+                    <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">DynamoDB</span>
+                    <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded">API Gateway</span>
+                  </div>
+                  <a href="https://github.com/ignatus-anim/taskflow-frontend" target="_blank" className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium">
+                    <Github size={16} />
+                    View on GitHub
+                  </a>
+                </div>
+                
+                {/* Microservices EKS */}
+                <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-gradient-to-br from-orange-600 to-red-600 rounded-lg">
+                      <Container className="text-white" size={28} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">Microservices on EKS</h3>
+                      <p className="text-gray-600">Container Orchestration</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 mb-4">
+                    Microservices-based application on Amazon EKS with service discovery,
+                    load balancing, and auto-scaling for improved reliability.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">Amazon EKS</span>
+                    <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">Microservices</span>
+                    <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">Auto-scaling</span>
+                  </div>
+                  <div className="text-gray-500 text-sm">
+                    <Lock size={16} className="inline mr-1" />
+                    Private Repository
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-
+        
         {/* Education Section */}
         <section id="education" className="min-h-screen flex items-center bg-gradient-to-br from-indigo-50 to-purple-50">
           <div className="container mx-auto px-4 py-20">
@@ -684,40 +771,7 @@ function App() {
                   </div>
                 </div>
                 
-                {/* Certifications */}
-                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
-                  <h3 className="text-xl font-bold mb-6">Professional Certifications</h3>
-                  
-                  <div className="grid md:grid-cols-2 gap-8">
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="p-2 bg-blue-600 rounded-lg">
-                          <Cloud className="text-white" size={24} />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold">AWS Certified Cloud Practitioner</h4>
-                          <p className="text-gray-600">Amazon Web Services</p>
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-600">Issued: March 2025 • Expires: March 2028</p>
-                      <p className="mt-3 text-gray-700">Foundational knowledge of AWS cloud services, security, and architecture concepts.</p>
-                    </div>
-                    
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="p-2 bg-purple-600 rounded-lg">
-                          <Container className="text-white" size={24} />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold">Certified Kubernetes Administrator</h4>
-                          <p className="text-gray-600">Cloud Native Computing Foundation</p>
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-600">Issued: August 2023 • Expires: August 2026</p>
-                      <p className="mt-3 text-gray-700">Expert knowledge in deploying and managing Kubernetes clusters.</p>
-                    </div>
-                  </div>
-                </div>
+
                 
                 {/* Languages */}
                 <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
@@ -782,6 +836,112 @@ function App() {
                     <div className="p-4 border-l-4 border-indigo-500">
                       <h4 className="font-semibold">☸️ Kubernetes</h4>
                       <p className="text-gray-600">Kubernetes and Cloud Native Associate Practice Exams (KCNA)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Certifications Section */}
+        <section id="certifications" className="min-h-screen flex items-center bg-gradient-to-br from-blue-50 to-indigo-50">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Professional Certifications</h2>
+              <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                Industry-recognized certifications demonstrating expertise in cloud technologies and DevOps practices
+              </p>
+              
+              <div className="space-y-8">
+                {/* AWS Solutions Architect Associate */}
+                <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                    <div className="flex-shrink-0">
+                      <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                        <Cloud className="text-white" size={32} />
+                      </div>
+                    </div>
+                    <div className="flex-grow">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-800">AWS Certified Solutions Architect – Associate</h3>
+                          <p className="text-orange-600 font-semibold">Amazon Web Services (AWS)</p>
+                        </div>
+                        <div className="mt-2 md:mt-0">
+                          <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Active</span>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 mb-3">Issued: July 2025 • Expires: July 2028</p>
+                      <p className="text-gray-700 mb-4">
+                        Demonstrates expertise in designing distributed systems on AWS, including scalable, highly available, 
+                        and fault-tolerant systems. Validates ability to select appropriate AWS services and implement 
+                        cost-effective solutions.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Solution Architecture</span>
+                        <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">AWS Services</span>
+                        <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Cost Optimization</span>
+                        <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Security</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Other Certifications */}
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="p-3 bg-blue-600 rounded-lg">
+                        <Cloud className="text-white" size={24} />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-lg">AWS Certified Cloud Practitioner</h4>
+                        <p className="text-blue-600 font-medium">Amazon Web Services</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">Issued: March 2025 • Expires: March 2028</p>
+                    <p className="text-gray-700 mb-4">Foundational knowledge of AWS cloud services, security, and architecture concepts.</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Cloud Fundamentals</span>
+                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">AWS Services</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="p-3 bg-purple-600 rounded-lg">
+                        <Container className="text-white" size={24} />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-lg">Kubernetes and Cloud Native Associate</h4>
+                        <p className="text-purple-600 font-medium">The Linux Foundation</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">Issued: May 2025 • Expires: May 2027</p>
+                    <p className="text-gray-700 mb-4">Foundational knowledge of Kubernetes and cloud native technologies.</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">KCNA</span>
+                      <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Cloud Native</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Certification Stats */}
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-8 rounded-xl border border-gray-200">
+                  <h3 className="text-xl font-bold text-center mb-6">Certification Overview</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div className="bg-white p-6 rounded-lg shadow-sm">
+                      <div className="text-3xl font-bold text-blue-600 mb-2">3</div>
+                      <p className="text-gray-600">Active Certifications</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-lg shadow-sm">
+                      <div className="text-3xl font-bold text-green-600 mb-2">2</div>
+                      <p className="text-gray-600">Cloud Platforms</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-lg shadow-sm">
+                      <div className="text-3xl font-bold text-purple-600 mb-2">100%</div>
+                      <p className="text-gray-600">Current & Valid</p>
                     </div>
                   </div>
                 </div>

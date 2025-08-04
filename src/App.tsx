@@ -1,664 +1,963 @@
-import React, { useState } from 'react';
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  ExternalLink, 
-  Download,
-  Server,
-  Cloud,
-  Database,
-  Code,
-  Smartphone,
-  GitBranch,
-  Shield,
-  Brain,
-  Award,
-  Calendar,
-  CheckCircle
-} from 'lucide-react';
-import jsPDF from 'jspdf';
+import React, { useState, useEffect } from 'react';
+import { Github, Linkedin, Mail, Phone, MapPin, Cloud, Container, GitBranch, Terminal, Database, Code, Lock, BarChart, Monitor, Settings, FileText, Download, Menu, X } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
-// Skill categories with icons and colors
-const skillCategories = [
-  {
-    title: "Backend Development",
-    icon: Server,
-    color: "backend",
-    skills: ["Python", "Java", "Node.js", "Spring Boot", "Django", "Flask", "Express.js"]
-  },
-  {
-    title: "Frontend Development", 
-    icon: Code,
-    color: "frontend",
-    skills: ["React", "TypeScript", "JavaScript", "HTML5", "CSS3", "Tailwind CSS", "Bootstrap"]
-  },
-  {
-    title: "Mobile Development",
-    icon: Smartphone,
-    color: "mobile", 
-    skills: ["React Native", "Flutter", "Android (Java/Kotlin)", "iOS (Swift)"]
-  },
-  {
-    title: "Cloud Platforms",
-    icon: Cloud,
-    color: "cloud",
-    skills: ["AWS", "Google Cloud Platform", "Microsoft Azure", "Heroku", "Vercel"]
-  },
-  {
-    title: "DevOps & Containerization",
-    icon: Server,
-    color: "container",
-    skills: ["Docker", "Kubernetes", "Jenkins", "GitHub Actions", "Terraform", "Ansible"]
-  },
-  {
-    title: "CI/CD & Automation",
-    icon: GitBranch,
-    color: "cicd",
-    skills: ["GitHub Actions", "Jenkins", "GitLab CI", "CircleCI", "Travis CI", "Azure DevOps"]
-  },
-  {
-    title: "Scripting & Automation",
-    icon: Code,
-    color: "script",
-    skills: ["Bash", "PowerShell", "Python Scripts", "Automation Tools"]
-  },
-  {
-    title: "Databases",
-    icon: Database,
-    color: "db",
-    skills: ["PostgreSQL", "MySQL", "MongoDB", "Redis", "SQLite", "DynamoDB"]
-  },
-  {
-    title: "Machine Learning & MLOps",
-    icon: Brain,
-    color: "ml",
-    skills: ["MLflow", "Apache Airflow", "Prometheus", "Grafana", "A/B Testing", "Model Deployment"]
-  },
-  {
-    title: "Security & Monitoring",
-    icon: Shield,
-    color: "security",
-    skills: ["OAuth", "JWT", "SSL/TLS", "Security Best Practices", "Monitoring", "Logging"]
-  }
-];
-
-// Certifications data
-const certifications = [
-  {
-    title: "AWS Certified Solutions Architect – Associate",
-    issuer: "Amazon Web Services (AWS)",
-    issued: "Jul 2025",
-    expires: "Jul 2028",
-    logo: "/assets/aws.svg",
-    credentialId: null,
-    verificationUrl: null
-  }
-];
-
-// Projects data
-const projects = [
-  {
-    title: "Bangalore Home Prices - MLOps Pipeline",
-    description: "A production-ready MLOps pipeline for continuous model training, A/B testing, and automated rollbacks. Built with Apache Airflow, MLflow, Docker, and AWS S3 to demonstrate end-to-end machine learning operations at scale.",
-    longDescription: `Developed a comprehensive MLOps system that automatically trains machine learning models, tests them against production models using A/B testing, and performs intelligent rollbacks based on performance metrics. The system handles the complete ML lifecycle from data ingestion to model deployment with zero-downtime updates.`,
-    technologies: ["Apache Airflow", "MLflow", "Docker", "AWS S3", "Flask", "Prometheus", "Grafana", "PostgreSQL", "Nginx", "pytest"],
-    github: "https://github.com/ignatus-anim/mlops",
-    demo: null,
-    category: "MLOps",
-    features: [
-      "Automated Training Pipeline with MLflow experiment tracking",
-      "A/B Testing Infrastructure with 80/20 traffic splitting",
-      "Intelligent Rollbacks based on performance metrics",
-      "Real-time Monitoring with Prometheus + Grafana",
-      "Data Drift Detection with automated alerts",
-      "100% test coverage with comprehensive testing"
-    ],
-    results: [
-      "90% Requirements Completion - All core MLOps features implemented",
-      "100% Test Coverage - 11/11 tests passing",
-      "Zero-downtime deployments with automated container management",
-      "Sub-millisecond prediction latency"
-    ],
-    impact: [
-      "Risk Mitigation: Automated rollbacks prevent deployment of underperforming models",
-      "Continuous Improvement: A/B testing enables data-driven model enhancement", 
-      "Operational Efficiency: Fully automated pipeline reduces manual intervention",
-      "Scalability: Container-based architecture ready for production workloads"
-    ]
-  },
-  {
-    title: "E-Commerce Platform",
-    description: "Full-stack e-commerce solution with React frontend, Node.js backend, and PostgreSQL database. Features include user authentication, product catalog, shopping cart, and payment integration.",
-    longDescription: "Built a comprehensive e-commerce platform from scratch with modern web technologies. Implemented secure user authentication, dynamic product catalog, real-time inventory management, and integrated payment processing.",
-    technologies: ["React", "Node.js", "Express.js", "PostgreSQL", "JWT", "Stripe API", "Docker"],
-    github: "https://github.com/ignatus-anim/ecommerce-platform",
-    demo: "https://ecommerce-demo.ignatusanim.com",
-    category: "Full Stack",
-    features: [
-      "User authentication and authorization",
-      "Product catalog with search and filtering",
-      "Shopping cart and checkout process",
-      "Payment integration with Stripe",
-      "Admin dashboard for inventory management",
-      "Responsive design for mobile and desktop"
-    ],
-    results: [
-      "Successfully deployed to production",
-      "Handles 1000+ concurrent users",
-      "99.9% uptime achieved",
-      "Positive user feedback on UX"
-    ]
-  },
-  {
-    title: "DevOps Infrastructure Automation",
-    description: "Automated infrastructure deployment using Terraform and Ansible. Includes CI/CD pipelines, monitoring setup, and container orchestration with Kubernetes.",
-    longDescription: "Designed and implemented a complete DevOps infrastructure automation solution. Created Infrastructure as Code templates, automated deployment pipelines, and comprehensive monitoring solutions.",
-    technologies: ["Terraform", "Ansible", "Kubernetes", "Docker", "Jenkins", "Prometheus", "Grafana", "AWS"],
-    github: "https://github.com/ignatus-anim/devops-automation",
-    demo: null,
-    category: "DevOps",
-    features: [
-      "Infrastructure as Code with Terraform",
-      "Configuration management with Ansible",
-      "Container orchestration with Kubernetes",
-      "Automated CI/CD pipelines",
-      "Comprehensive monitoring and alerting",
-      "Auto-scaling and load balancing"
-    ],
-    results: [
-      "Reduced deployment time by 80%",
-      "Improved system reliability to 99.9%",
-      "Automated 95% of manual processes",
-      "Significant cost optimization achieved"
-    ]
-  }
-];
+type Tab = 'home' | 'about' | 'skills' | 'experience' | 'education' | 'services' | 'contact';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('about');
-
-  const generatePDF = () => {
-    const pdf = new jsPDF();
+  const [activeTab, setActiveTab] = useState<Tab>('home');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const generateCV = () => {
+    // @ts-ignore - jsPDF types
+    const doc = new jsPDF();
     
-    // Header
-    pdf.setFontSize(24);
-    pdf.setFont(undefined, 'bold');
-    pdf.text('Ignatus Anim', 20, 30);
+    // Add title
+    doc.setFontSize(20);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Ignatus Anim', 105, 20, { align: 'center' });
     
-    pdf.setFontSize(12);
-    pdf.setFont(undefined, 'normal');
-    pdf.text('Software Engineer & DevOps Engineer', 20, 40);
+    // Add subtitle
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('DevOps Engineer & Cloud Specialist', 105, 28, { align: 'center' });
     
-    // Contact Info
-    pdf.setFontSize(10);
-    pdf.text('Email: ignatus.anim@example.com', 20, 55);
-    pdf.text('Phone: +233 XX XXX XXXX', 20, 65);
-    pdf.text('Location: Accra, Ghana', 20, 75);
-    pdf.text('LinkedIn: linkedin.com/in/ignatus-anim', 20, 85);
-    pdf.text('GitHub: github.com/ignatus-anim', 20, 95);
+    // Add contact info
+    doc.setFontSize(10);
+    doc.text('ignatusa3@gmail.com | +233545565863 | Kumasi, Ghana', 105, 35, { align: 'center' });
+    doc.text('linkedin.com/in/ignatus-anim-688a071a0 | github.com/ignatus-anim', 105, 40, { align: 'center' });
     
-    // Skills Section
-    let yPosition = 115;
-    pdf.setFontSize(16);
-    pdf.setFont(undefined, 'bold');
-    pdf.text('Technical Skills', 20, yPosition);
+    // Professional Statement
+    doc.setFontSize(12);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Professional Statement', 20, 50);
+    doc.setDrawColor(0, 51, 102);
+    doc.line(20, 52, 190, 52);
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Passionate about building robust infrastructure and automating deployment pipelines.', 20, 58);
+    doc.text('Specializing in cloud technologies, containerization, and CI/CD automation.', 20, 64);
     
-    yPosition += 15;
-    pdf.setFontSize(10);
-    pdf.setFont(undefined, 'normal');
+    // Work Experience
+    doc.setFontSize(12);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Work Experience', 20, 74);
+    doc.setDrawColor(0, 51, 102);
+    doc.line(20, 76, 190, 76);
     
-    skillCategories.forEach(category => {
-      if (yPosition > 250) {
-        pdf.addPage();
-        yPosition = 30;
-      }
-      
-      pdf.setFont(undefined, 'bold');
-      pdf.text(category.title + ':', 20, yPosition);
-      pdf.setFont(undefined, 'normal');
-      pdf.text(category.skills.join(', '), 20, yPosition + 8);
-      yPosition += 20;
-    });
+    // Job 1
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    doc.text('DevOps Engineer', 20, 82);
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Amalitech | October 2024 - Present', 20, 87);
+    doc.setTextColor(0, 0, 0);
+    doc.text('• Designed and implemented CI/CD pipelines using Jenkins and GitHub Actions', 25, 93);
+    doc.text('• Managed AWS infrastructure using Terraform, ensuring infrastructure as code best practices', 25, 98);
+    doc.text('• Implemented container security scanning and vulnerability management', 25, 103);
+    doc.text('• Set up comprehensive monitoring using Prometheus and Grafana', 25, 108);
     
-    // Certifications Section
-    if (yPosition > 220) {
-      pdf.addPage();
-      yPosition = 30;
-    }
+    // Job 2
+    doc.setFontSize(11);
+    doc.text('IT Technician (Internship)', 20, 115);
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Samartex Timber & Plywood | August 2023 - December 2023', 20, 120);
+    doc.setTextColor(0, 0, 0);
+    doc.text('• Managed and maintained Linux servers, ensuring high availability and security', 25, 126);
+    doc.text('• Implemented network monitoring solutions to improve system reliability', 25, 131);
+    doc.text('• Automated routine maintenance tasks using Bash scripting', 25, 136);
     
-    pdf.setFontSize(16);
-    pdf.setFont(undefined, 'bold');
-    pdf.text('Certifications', 20, yPosition);
-    yPosition += 15;
+    // Education
+    doc.setFontSize(12);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Education', 20, 146);
+    doc.setDrawColor(0, 51, 102);
+    doc.line(20, 148, 190, 148);
     
-    certifications.forEach(cert => {
-      pdf.setFontSize(12);
-      pdf.setFont(undefined, 'bold');
-      pdf.text(cert.title, 20, yPosition);
-      pdf.setFontSize(10);
-      pdf.setFont(undefined, 'normal');
-      pdf.text(`${cert.issuer} | Issued: ${cert.issued} | Expires: ${cert.expires}`, 20, yPosition + 8);
-      yPosition += 20;
-    });
+    doc.setFontSize(11);
+    doc.setTextColor(0, 0, 0);
+    doc.text('BSc Computer Engineering, First Class', 20, 154);
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Kwame Nkrumah University of Science and Technology (KNUST) | 2020 - 2024', 20, 159);
     
-    // Projects Section
-    if (yPosition > 200) {
-      pdf.addPage();
-      yPosition = 30;
-    }
+    // Certifications
+    doc.setFontSize(12);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Certifications', 20, 169);
+    doc.setDrawColor(0, 51, 102);
+    doc.line(20, 171, 190, 171);
     
-    pdf.setFontSize(16);
-    pdf.setFont(undefined, 'bold');
-    pdf.text('Key Projects', 20, yPosition);
-    yPosition += 15;
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('• AWS Certified Cloud Practitioner | Amazon Web Services | March 2025', 20, 177);
+    doc.text('• Certified Kubernetes Administrator | Cloud Native Computing Foundation | August 2023', 20, 182);
     
-    projects.forEach(project => {
-      if (yPosition > 220) {
-        pdf.addPage();
-        yPosition = 30;
-      }
-      
-      pdf.setFontSize(12);
-      pdf.setFont(undefined, 'bold');
-      pdf.text(project.title, 20, yPosition);
-      pdf.setFontSize(10);
-      pdf.setFont(undefined, 'normal');
-      
-      const descriptionLines = pdf.splitTextToSize(project.description, 170);
-      pdf.text(descriptionLines, 20, yPosition + 8);
-      
-      pdf.text('Technologies: ' + project.technologies.join(', '), 20, yPosition + 8 + (descriptionLines.length * 5) + 5);
-      yPosition += 30 + (descriptionLines.length * 5);
-    });
+    // Skills
+    doc.setFontSize(12);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Technical Skills', 20, 192);
+    doc.setDrawColor(0, 51, 102);
+    doc.line(20, 194, 190, 194);
     
-    pdf.save('Ignatus_Anim_CV.pdf');
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('• Cloud: AWS, GCP, Azure, Lambda, EC2, EKS', 20, 200);
+    doc.text('• Containerization: Docker, Kubernetes, Helm', 20, 205);
+    doc.text('• CI/CD: Jenkins, GitHub Actions, GitLab CI', 20, 210);
+    doc.text('• IaC: Terraform, CloudFormation, Ansible', 20, 215);
+    doc.text('• Monitoring: Prometheus, Grafana, ELK Stack', 20, 220);
+    doc.text('• Languages: Python, Bash', 20, 225);
+    
+    // Languages
+    doc.setFontSize(12);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Languages', 20, 235);
+    doc.setDrawColor(0, 51, 102);
+    doc.line(20, 237, 190, 237);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('English (Fluent), German (Basic), French (Basic)', 20, 243);
+    
+    // Save the PDF
+    doc.save('Ignatus_Anim_CV.pdf');
   };
 
-  const TabButton = ({ id, label, isActive, onClick }) => (
-    <button
-      onClick={() => onClick(id)}
-      className={`px-6 py-3 font-medium text-sm rounded-lg transition-all duration-300 ${
-        isActive
-          ? 'bg-blue-600 text-white shadow-lg'
-          : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-      }`}
-    >
-      {label}
-    </button>
-  );
+  const tabs = [
+    { id: 'home' as Tab, label: 'Home' },
+    { id: 'about' as Tab, label: 'About' },
+    { id: 'skills' as Tab, label: 'Skills' },
+    { id: 'experience' as Tab, label: 'Experience' },
+    { id: 'education' as Tab, label: 'Education' },
+    { id: 'services' as Tab, label: 'Services' },
+    { id: 'contact' as Tab, label: 'Contact' }
+  ];
 
-  const SkillCard = ({ category }) => {
-    const IconComponent = category.icon;
-    return (
-      <div className="skill-card group">
-        <div className="flex items-start gap-4">
-          <div className={`skill-icon ${category.color}-icon group-hover:scale-110 transition-transform duration-300`}>
-            <IconComponent className="w-6 h-6" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-800 mb-3">{category.title}</h3>
-            <div className="flex flex-wrap gap-2">
-              {category.skills.map((skill, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full hover:bg-gray-200 transition-colors duration-200"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = tabs.map(tab => document.getElementById(tab.id));
+      const scrollPosition = window.scrollY + 100;
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveTab(tabs[i].id);
+          break;
+        }
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (isMobileMenuOpen && !target.closest('header')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
+
+  const scrollToSection = (sectionId: string) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  const CertificationCard = ({ cert }) => (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-      <div className="flex items-start gap-4">
-        <div className="w-16 h-16 bg-orange-50 rounded-lg flex items-center justify-center flex-shrink-0">
-          <img src={cert.logo} alt={`${cert.issuer} logo`} className="w-10 h-10 object-contain" />
-        </div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-gray-800 mb-2">{cert.title}</h3>
-          <p className="text-gray-600 mb-3">{cert.issuer}</p>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <div className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" />
-              <span>Issued: {cert.issued}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span>Expires: {cert.expires}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const ProjectCard = ({ project }) => (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group">
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
-              {project.title}
-            </h3>
-            <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-              {project.category}
-            </span>
-          </div>
-          <div className="flex gap-2">
-            {project.github && (
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-            )}
-            {project.demo && (
-              <a
-                href={project.demo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
-              >
-                <ExternalLink className="w-5 h-5" />
-              </a>
-            )}
-          </div>
-        </div>
-
-        <p className="text-gray-600 mb-4 leading-relaxed">{project.description}</p>
-
-        {project.longDescription && (
-          <p className="text-gray-600 mb-4 leading-relaxed text-sm">{project.longDescription}</p>
-        )}
-
-        {project.features && (
-          <div className="mb-4">
-            <h4 className="font-medium text-gray-800 mb-2">Key Features:</h4>
-            <ul className="space-y-1">
-              {project.features.map((feature, index) => (
-                <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {project.results && (
-          <div className="mb-4">
-            <h4 className="font-medium text-gray-800 mb-2">Results Achieved:</h4>
-            <ul className="space-y-1">
-              {project.results.map((result, index) => (
-                <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
-                  <Award className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                  <span>{result}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {project.impact && (
-          <div className="mb-4">
-            <h4 className="font-medium text-gray-800 mb-2">Business Impact:</h4>
-            <ul className="space-y-1">
-              {project.impact.map((impact, index) => (
-                <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
-                  <Brain className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
-                  <span>{impact}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <div className="flex flex-wrap gap-2">
-          {project.technologies.map((tech, index) => (
-            <span
-              key={index}
-              className="px-2.5 py-0.5 bg-gray-100 text-gray-700 text-xs rounded border border-gray-200 hover:bg-gray-200 transition-colors duration-200"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                IA
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-800">Ignatus Anim</h1>
-                <p className="text-gray-600">Software Engineer & DevOps Engineer</p>
-              </div>
+      <header className="bg-white border-b border-gray-100 fixed top-0 w-full z-50">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-3">
+              <img 
+                src="/profile_pic.jpg" 
+                alt="Ignatus Anim" 
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+              />
+              <span className="text-lg sm:text-xl font-bold text-gray-800">Ignatus Anim</span>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center gap-6 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  <span>ignatus.anim@example.com</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  <span>+233 XX XXX XXXX</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  <span>Accra, Ghana</span>
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex gap-1">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => scrollToSection(tab.id)}
+                  className={`px-3 lg:px-4 py-2 rounded-lg transition-colors text-sm lg:text-base ${
+                    activeTab === tab.id
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+            
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+          
+          {/* Mobile Navigation */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden border-t border-gray-100 py-4">
+              <nav className="flex flex-col gap-2">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      scrollToSection(tab.id);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`px-4 py-3 rounded-lg transition-colors text-left ${
+                      activeTab === tab.id
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          )}
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="pt-20">
+        {/* Home Section */}
+        <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              {/* Enhanced Profile Image */}
+              <div className="mb-6 sm:mb-8">
+                <div className="relative inline-block">
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-2xl">
+                    <img 
+                      src="/profile_pic.jpg" 
+                      alt="Ignatus Anim" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full border-4 border-white"></div>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3">
-                <a
-                  href="https://github.com/ignatus-anim"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ignatus Anim</h1>
+              <h2 className="text-xl sm:text-2xl md:text-3xl mb-6 sm:mb-8 text-gray-700">DevOps Engineer & Cloud Specialist</h2>
+              <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
+                Passionate about building robust infrastructure and automating deployment pipelines. 
+                Specializing in cloud technologies, containerization, and CI/CD automation.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-4">
+                <button 
+                  onClick={() => scrollToSection('about')}
+                  className="px-6 sm:px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                 >
-                  <Github className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://linkedin.com/in/ignatus-anim"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                  Learn More
+                </button>
+                <button 
+                  onClick={() => scrollToSection('contact')}
+                  className="px-6 sm:px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
                 >
-                  <Linkedin className="w-5 h-5" />
-                </a>
-                <button
-                  onClick={generatePDF}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  Get In Touch
+                </button>
+                <button 
+                  onClick={generateCV}
+                  className="px-6 sm:px-8 py-3 flex items-center justify-center gap-2 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
                 >
-                  <Download className="w-4 h-4" />
-                  <span className="hidden sm:inline">Download CV</span>
+                  <FileText size={16} className="sm:w-[18px] sm:h-[18px]" />
+                  Get CV
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      </header>
+        </section>
 
-      {/* Navigation */}
-      <nav className="bg-white border-b border-gray-100">
-        <div className="container mx-auto px-6">
-          <div className="flex gap-1 overflow-x-auto py-4">
-            <TabButton id="about" label="About" isActive={activeTab === 'about'} onClick={setActiveTab} />
-            <TabButton id="skills" label="Skills" isActive={activeTab === 'skills'} onClick={setActiveTab} />
-            <TabButton id="certifications" label="Certifications" isActive={activeTab === 'certifications'} onClick={setActiveTab} />
-            <TabButton id="projects" label="Projects" isActive={activeTab === 'projects'} onClick={setActiveTab} />
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        {activeTab === 'about' && (
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="md:flex">
-                <div className="md:w-1/4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-4xl mx-auto mb-4 shadow-2xl">
-                      IA
+        {/* About Section */}
+        <section id="about" className="min-h-screen flex items-center bg-gradient-to-br from-gray-50 to-indigo-50">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-5xl mx-auto space-y-12">
+              <div className="text-center">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-6">About Me</h2>
+                <div className="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-100 max-w-4xl mx-auto">
+                  <p className="text-gray-700 leading-relaxed text-base sm:text-lg mb-6">
+                    I'm a passionate DevOps Engineer who thrives on transforming complex infrastructure challenges into elegant, automated solutions. 
+                    With expertise in cloud technologies and modern deployment practices, I help organizations scale efficiently while maintaining reliability. 
+                    My mission is to bridge the gap between development and operations, creating seamless workflows that accelerate innovation. 
+                    I believe in the power of automation to eliminate repetitive tasks and reduce human error, allowing teams to focus on what truly matters.
+                  </p>
+                  
+                  {/* Key Skills Highlight */}
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 sm:p-6 rounded-lg mb-6">
+                    <h3 className="text-base sm:text-lg font-semibold mb-3 text-center">Core Expertise</h3>
+                    <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+                      <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">AWS</span>
+                      <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">Kubernetes</span>
+                      <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">Terraform</span>
+                      <span className="bg-orange-600 text-white px-3 py-1 rounded-full text-sm font-medium">CI/CD</span>
+                      <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">Docker</span>
+                      <span className="bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-medium">Jenkins</span>
+                      <span className="bg-teal-600 text-white px-3 py-1 rounded-full text-sm font-medium">Monitoring</span>
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-800">Ignatus Anim</h2>
-                    <p className="text-gray-600 mt-1">Solutions Architect</p>
-                  </div>
-                </div>
-                <div className="md:w-3/4 p-8">
-                  <h2 className="text-3xl font-bold text-gray-800 mb-6">About Me</h2>
-                  <div className="space-y-4 text-gray-600 leading-relaxed">
-                    <p>
-                      I'm a passionate Software Engineer and DevOps Engineer with expertise in building scalable, 
-                      production-ready applications and infrastructure. Recently certified as an AWS Solutions Architect Associate, 
-                      I specialize in cloud architecture, MLOps, and end-to-end software development.
-                    </p>
-                    <p>
-                      My experience spans across full-stack development, cloud platforms, containerization, 
-                      and modern DevOps practices. I have a strong background in machine learning operations, 
-                      having built comprehensive MLOps pipelines with automated training, A/B testing, and intelligent rollbacks.
-                    </p>
-                    <p>
-                      I'm particularly interested in solving complex technical challenges, optimizing system performance, 
-                      and implementing best practices for software delivery and infrastructure management. 
-                      My goal is to bridge the gap between development and operations while ensuring robust, 
-                      scalable, and maintainable solutions.
-                    </p>
                   </div>
                   
-                  <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-3">
-                      <h3 className="font-semibold text-gray-800">Core Expertise</h3>
-                      <ul className="space-y-2 text-sm text-gray-600">
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          Cloud Architecture & AWS Solutions
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          MLOps & Machine Learning Pipelines
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                          DevOps & Infrastructure Automation
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                          Full-Stack Development
-                        </li>
-                      </ul>
+                  {/* Fun Facts */}
+                  <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 sm:p-6 rounded-lg">
+                    <h3 className="text-base sm:text-lg font-semibold mb-3 text-center">Fun Facts</h3>
+                    <div className="space-y-2 text-sm sm:text-base text-gray-700">
+                      <p className="flex items-center justify-center gap-2">
+                        <span>☕</span> I automate everything, even my coffee brewing schedule!
+                      </p>
+                      <p className="flex items-center justify-center gap-2">
+                        <span>🔧</span> My favorite debugging tool? A good night's sleep and fresh perspective
+                      </p>
+                      <p className="flex items-center justify-center gap-2">
+                        <span>📚</span> Always learning - currently exploring GitOps and service mesh technologies
+                      </p>
+                      <p className="flex items-center justify-center gap-2">
+                        <span>🔒</span> Security conscious and always following industry best practices
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* About content */}
+            </div>
+          </div>
+        </section>
+
+        {/* Skills Section */}
+        <section id="skills" className="min-h-screen flex items-center bg-gradient-to-br from-gray-50 to-blue-50">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Technical Skills</h2>
+              <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                Expertise in modern DevOps tools and cloud technologies
+              </p>
+              
+              {/* Technology Icons Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-16">
+                <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="flex flex-col items-center">
+                    <img src="/assets/aws.svg" alt="AWS" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-gray-700">AWS</span>
+                  </div>
+                </div>
+                <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="flex flex-col items-center">
+                    <img src="/assets/gcp.svg" alt="Google Cloud" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-gray-700">GCP</span>
+                  </div>
+                </div>
+                <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="flex flex-col items-center">
+                    <img src="/assets/azure.svg" alt="Azure" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-gray-700">Azure</span>
+                  </div>
+                </div>
+                <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="flex flex-col items-center">
+                    <img src="/assets/docker.svg" alt="Docker" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-gray-700">Docker</span>
+                  </div>
+                </div>
+                <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="flex flex-col items-center">
+                    <img src="/assets/kubernetes.svg" alt="Kubernetes" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-gray-700">Kubernetes</span>
+                  </div>
+                </div>
+                <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="flex flex-col items-center">
+                    <img src="/assets/terraform.svg" alt="Terraform" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-gray-700">Terraform</span>
+                  </div>
+                </div>
+                <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="flex flex-col items-center">
+                    <img src="/assets/jenkins.svg" alt="Jenkins" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-gray-700">Jenkins</span>
+                  </div>
+                </div>
+                <div className="group bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="flex flex-col items-center">
+                    <img src="/assets/github.svg" alt="GitHub" className="w-12 h-12 mb-3 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-gray-700">GitHub</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Cloud className="text-blue-600" />
+                    </div>
+                    <h3 className="font-semibold">Cloud Platforms</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>• AWS (ECS, EKS, Lambda, EC2)</li>
+                    <li>• Google Cloud Platform</li>
+                    <li>• Microsoft Azure</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <Container className="text-purple-600" />
+                    </div>
+                    <h3 className="font-semibold">Containerization</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>• Docker, Docker Compose</li>
+                    <li>• Kubernetes, Helm</li>
+                    <li>• Container Registry Management</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <GitBranch className="text-green-600" />
+                    </div>
+                    <h3 className="font-semibold">CI/CD & Automation</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>• Jenkins, GitHub Actions</li>
+                    <li>• GitLab CI, Azure DevOps</li>
+                    <li>• Pipeline Automation</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-orange-100 rounded-lg">
+                      <Settings className="text-orange-600" />
+                    </div>
+                    <h3 className="font-semibold">Infrastructure as Code</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>• Terraform, Terragrunt</li>
+                    <li>• AWS CloudFormation</li>
+                    <li>• Ansible, Puppet</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-red-100 rounded-lg">
+                      <Monitor className="text-red-600" />
+                    </div>
+                    <h3 className="font-semibold">Monitoring & Logging</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>• Prometheus, Grafana</li>
+                    <li>• ELK Stack, Splunk</li>
+                    <li>• CloudWatch, DataDog</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-indigo-100 rounded-lg">
+                      <Code className="text-indigo-600" />
+                    </div>
+                    <h3 className="font-semibold">Backend Development</h3>
+                  </div>
+                  <ul className="text-gray-600 space-y-2">
+                    <li>• Python, Bash Scripting</li>
+                    <li>• Linux System Administration</li>
+                    <li>• Network Configuration</li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Other Skills Section */}
+              <div className="mt-16">
+                <h3 className="text-2xl font-bold text-center mb-8">Other Skills</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Code className="text-green-600" />
+                      <h4 className="font-semibold">System Administration</h4>
+                    </div>
+                    <ul className="text-gray-600 space-y-2">
+                      <li>Python, Bash Scripting</li>
+                      <li>Linux System Administration</li>
+                      <li>Network Configuration</li>
+                    </ul>
+                  </div>
+                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Database className="text-green-600" />
+                      <h4 className="font-semibold">Database Management</h4>
+                    </div>
+                    <ul className="text-gray-600 space-y-2">
+                      <li>PostgreSQL, MySQL</li>
+                      <li>MongoDB, DynamoDB</li>
+                      <li>Redis, Database Optimization</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Experience Section */}
+        <section id="experience" className="min-h-screen flex items-center bg-white">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Professional Experience</h2>
+              <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                My journey in DevOps and cloud infrastructure
+              </p>
+              
+              <div className="space-y-12">
+                {/* Job 1 */}
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-blue-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 sm:mb-6">
+                    <div>
+                      <h3 className="text-lg sm:text-xl font-bold">DevOps Engineer</h3>
+                      <p className="text-blue-600 font-medium">Amalitech</p>
+                    </div>
+                    <p className="text-gray-600 mt-2 md:mt-0">October 2024 - Present</p>
+                  </div>
+                  <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
+                    Leading infrastructure automation and cloud deployment initiatives, focusing on scalable and secure solutions.
+                  </p>
+                  <div className="space-y-2 sm:space-y-3">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
+                      <span className="text-blue-600 font-bold">•</span>
+                      Designed and implemented CI/CD pipelines using Jenkins and GitHub Actions, reducing deployment time by 40%
+                    </p>
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
+                      <span className="text-blue-600 font-bold">•</span>
+                      Managed AWS infrastructure using Terraform, ensuring infrastructure as code best practices
+                    </p>
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
+                      <span className="text-blue-600 font-bold">•</span>
+                      Implemented container security scanning and vulnerability management across the deployment pipeline
+                    </p>
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
+                      <span className="text-blue-600 font-bold">•</span>
+                      Set up comprehensive monitoring using Prometheus and Grafana for real-time system observability
+                    </p>
+                  </div>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">AWS</span>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Terraform</span>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Jenkins</span>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Docker</span>
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Kubernetes</span>
+                  </div>
+                </div>
+                
+                {/* Job 2 */}
+                <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-green-200 hover:shadow-lg transition-all duration-300">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 sm:mb-6">
+                    <div>
+                      <h3 className="text-lg sm:text-xl font-bold">IT Technician (Internship)</h3>
+                      <p className="text-green-600 font-medium">Samartex Timber & Plywood</p>
+                    </div>
+                    <p className="text-gray-600 mt-2 md:mt-0">August 2023 - December 2023</p>
+                  </div>
+                  <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
+                    Provided technical support and maintained Linux systems and network infrastructure.
+                  </p>
+                  <div className="space-y-2 sm:space-y-3">
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
+                      <span className="text-green-600 font-bold">•</span>
+                      Managed and maintained Linux servers, ensuring high availability and security
+                    </p>
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
+                      <span className="text-green-600 font-bold">•</span>
+                      Implemented network monitoring solutions to improve system reliability
+                    </p>
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
+                      <span className="text-green-600 font-bold">•</span>
+                      Automated routine maintenance tasks using Bash scripting
+                    </p>
+                    <p className="flex items-start gap-2 text-sm sm:text-base">
+                      <span className="text-green-600 font-bold">•</span>
+                      Provided technical support and troubleshooting for company staff
+                    </p>
+                  </div>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Linux</span>
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Bash</span>
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Networking</span>
+                    <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Troubleshooting</span>
+                  </div>
+                </div>
+                
+                {/* Projects Section */}
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-purple-200 hover:shadow-lg transition-all duration-300">
+                  <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Notable Projects</h3>
+                  
+                  <div className="space-y-4 sm:space-y-6">
+                    <div>
+                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Disaster Recovery using Pilot Light Strategy</h4>
+                      <p className="text-sm sm:text-base text-gray-700 mt-2">
+                        Implemented a disaster recovery solution using AWS Pilot Light architecture to ensure business continuity
+                        with minimal downtime and data loss during regional outages.
+                      </p>
+                      <a href="https://github.com/ignatus-anim/nebula-pilot-light-disaster-recovery" target="_blank" className="text-blue-600 hover:underline text-sm mt-1 inline-block">
+                        View on GitHub
+                      </a>
                     </div>
                     
-                    <div className="space-y-3">
-                      <h3 className="font-semibold text-gray-800">Recent Achievements</h3>
-                      <ul className="space-y-2 text-sm text-gray-600">
-                        <li className="flex items-center gap-2">
-                          <Award className="w-4 h-4 text-yellow-500" />
-                          AWS Certified Solutions Architect
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          Production MLOps Pipeline Deployment
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          100% Test Coverage Achievement
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          Zero-Downtime Deployment Implementation
-                        </li>
-                      </ul>
+                    <div>
+                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Serverless Task Management Application</h4>
+                      <p className="text-sm sm:text-base text-gray-700 mt-2">
+                        Developed a serverless application using AWS Lambda, API Gateway, DynamoDB, and SES for efficient
+                        task management with automated notifications and scalable backend.
+                      </p>
+                      <a href="https://github.com/ignatus-anim/taskflow-frontend" target="_blank" className="text-blue-600 hover:underline text-sm mt-1 inline-block">
+                        View on GitHub
+                      </a>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm sm:text-base font-semibold text-purple-700">Microservices Deployment using EKS</h4>
+                      <p className="text-sm sm:text-base text-gray-700 mt-2">
+                        Architected and deployed a microservices-based application on Amazon EKS, implementing service discovery,
+                        load balancing, and auto-scaling for improved reliability and performance.
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        )}
+        </section>
 
-        {activeTab === 'skills' && (
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">Technical Skills</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                A comprehensive overview of my technical expertise across various domains of software engineering and DevOps.
+        {/* Education Section */}
+        <section id="education" className="min-h-screen flex items-center bg-gradient-to-br from-indigo-50 to-purple-50">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Education</h2>
+              <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                My academic journey and qualifications
               </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {skillCategories.map((category, index) => (
-                <SkillCard key={index} category={category} />
-              ))}
+              
+              <div className="space-y-8">
+                {/* Formal Education */}
+                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-6">Formal Education</h3>
+                  
+                  <div className="space-y-8">
+                    <div className="flex flex-col md:flex-row gap-6">
+                      <div className="md:w-1/4 flex justify-center">
+                        <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
+                          <span className="text-blue-600 text-3xl font-bold">BSc</span>
+                        </div>
+                      </div>
+                      <div className="md:w-3/4">
+                        <h4 className="text-lg font-semibold">BSc Computer Engineering, First Class</h4>
+                        <p className="text-blue-600">Kwame Nkrumah University of Science and Technology (KNUST)</p>
+                        <p className="text-gray-600 mt-1">2020 - 2024</p>
+                        <div className="mt-4 text-gray-700">
+                          <p>Relevant coursework:</p>
+                          <ul className="list-disc pl-5 mt-2 space-y-1">
+                            <li>Operating Systems</li>
+                            <li>Computer Networks</li>
+                            <li>Database Management Systems</li>
+                            <li>Software Engineering</li>
+                            <li>Distributed Systems</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Certifications */}
+                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-6">Professional Certifications</h3>
+                  
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="p-2 bg-blue-600 rounded-lg">
+                          <Cloud className="text-white" size={24} />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">AWS Certified Cloud Practitioner</h4>
+                          <p className="text-gray-600">Amazon Web Services</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600">Issued: March 2025 • Expires: March 2028</p>
+                      <p className="mt-3 text-gray-700">Foundational knowledge of AWS cloud services, security, and architecture concepts.</p>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="p-2 bg-purple-600 rounded-lg">
+                          <Container className="text-white" size={24} />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Certified Kubernetes Administrator</h4>
+                          <p className="text-gray-600">Cloud Native Computing Foundation</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600">Issued: August 2023 • Expires: August 2026</p>
+                      <p className="mt-3 text-gray-700">Expert knowledge in deploying and managing Kubernetes clusters.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Languages */}
+                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-6">Languages</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                      <h4 className="font-semibold text-center mb-3">English</h4>
+                      <div className="flex justify-center">
+                        <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">Fluent</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                      <h4 className="font-semibold text-center mb-3">German</h4>
+                      <div className="flex justify-center">
+                        <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">Basic</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
+                      <h4 className="font-semibold text-center mb-3">French</h4>
+                      <div className="flex justify-center">
+                        <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">Basic</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Additional Training */}
+                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+                  <h3 className="text-xl font-bold mb-6">Additional Training</h3>
+                  
+                  <div className="space-y-6">
+                    <div className="p-4 border-l-4 border-blue-500">
+                      <h4 className="font-semibold">🧠 Programming (Python)</h4>
+                      <p className="text-gray-600">100 Days of Code: The Complete Python Pro Bootcamp</p>
+                    </div>
+                    
+                    <div className="p-4 border-l-4 border-green-500">
+                      <h4 className="font-semibold">🌐 Networking</h4>
+                      <p className="text-gray-600">The Complete Networking Fundamentals Course (CCNA start)</p>
+                    </div>
+                    
+                    <div className="p-4 border-l-4 border-purple-500">
+                      <h4 className="font-semibold">💻 IT Fundamentals</h4>
+                      <p className="text-gray-600">CompTIA A+ Core 1 (220-1201) Full Course & Practice Exam</p>
+                    </div>
+                    
+                    <div className="p-4 border-l-4 border-orange-500">
+                      <h4 className="font-semibold">🛠️ DevOps & Automation</h4>
+                      <p className="text-gray-600">The Complete Jenkins DevOps CI/CD Pipeline Bootcamp</p>
+                      <p className="text-gray-600">The Complete Terraform with Ansible Bootcamp 2025</p>
+                      <p className="text-gray-600">Ultimate DevOps to MLOps Bootcamp - Build ML CI/CD Pipelines</p>
+                    </div>
+                    
+                    <div className="p-4 border-l-4 border-red-500">
+                      <h4 className="font-semibold">💻 Full-Stack Development</h4>
+                      <p className="text-gray-600">The Complete Full-Stack Web Development Bootcamp</p>
+                    </div>
+                    
+                    <div className="p-4 border-l-4 border-indigo-500">
+                      <h4 className="font-semibold">☸️ Kubernetes</h4>
+                      <p className="text-gray-600">Kubernetes and Cloud Native Associate Practice Exams (KCNA)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        )}
-
-        {activeTab === 'certifications' && (
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">Certifications</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Professional certifications that validate my expertise in cloud technologies and software architecture.
+        </section>
+        
+        {/* Services Section */}
+        <section id="services" className="min-h-screen flex items-center bg-white">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Services</h2>
+              <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                Professional DevOps and cloud infrastructure services to accelerate your business
               </p>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-6">
-              {certifications.map((cert, index) => (
-                <CertificationCard key={index} cert={cert} />
-              ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                <div className="group bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-blue-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="p-3 bg-blue-600 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
+                    <Cloud className="text-white" size={32} />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4">Cloud Infrastructure</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
+                    Design and implement scalable cloud infrastructure on AWS, GCP, and Azure with cost optimization.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Infrastructure as Code (Terraform)</li>
+                    <li>• Auto-scaling & load balancing</li>
+                    <li>• Multi-cloud architecture</li>
+                  </ul>
+                </div>
+                
+                <div className="group bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-green-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="p-3 bg-green-600 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
+                    <GitBranch className="text-white" size={32} />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4">CI/CD Pipeline Setup</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
+                    Automated deployment pipelines with testing, security scanning, and deployment automation.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Jenkins & GitHub Actions</li>
+                    <li>• Automated testing integration</li>
+                    <li>• Blue-green deployments</li>
+                  </ul>
+                </div>
+                
+                <div className="group bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-purple-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="p-3 bg-purple-600 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
+                    <Container className="text-white" size={32} />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4">Containerization & Orchestration</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
+                    Docker containerization and Kubernetes orchestration for scalable microservices architecture.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Docker & Kubernetes setup</li>
+                    <li>• Microservices architecture</li>
+                    <li>• Container security & optimization</li>
+                  </ul>
+                </div>
+                
+                <div className="group bg-gradient-to-br from-orange-50 to-orange-100 p-4 sm:p-6 md:p-8 rounded-xl shadow-sm border border-orange-200 hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                  <div className="p-3 bg-orange-600 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform">
+                    <Monitor className="text-white" size={32} />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4">Monitoring & Observability</h3>
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">
+                    Comprehensive monitoring solutions with alerting, logging, and performance optimization.
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Prometheus & Grafana setup</li>
+                    <li>• ELK Stack implementation</li>
+                    <li>• Performance monitoring & alerts</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-        )}
+        </section>
 
-        {activeTab === 'projects' && (
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">Featured Projects</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                A showcase of my recent work demonstrating expertise in MLOps, full-stack development, and DevOps automation.
+        {/* Contact Section */}
+        <section id="contact" className="min-h-screen flex items-center bg-gradient-to-br from-gray-50 to-blue-50">
+          <div className="container mx-auto px-4 py-20">
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">Get In Touch</h2>
+              <p className="text-gray-600 text-center mb-12">
+                Ready to discuss your next project? Let's connect!
               </p>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {projects.map((project, index) => (
-                <ProjectCard key={index} project={project} />
-              ))}
+              <div className="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Mail className="text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm sm:text-base font-semibold">Email</p>
+                      <a href="mailto:ignatusa3@gmail.com" className="text-blue-600 hover:underline">
+                        ignatusa3@gmail.com
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <Phone className="text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm sm:text-base font-semibold">Phone</p>
+                      <a href="tel:+233545565863" className="text-green-600 hover:underline">
+                        +233545565863
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="p-2 bg-red-100 rounded-lg">
+                      <MapPin className="text-red-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm sm:text-base font-semibold">Location</p>
+                      <p className="text-gray-600">Kumasi, Ghana</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Linkedin className="text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm sm:text-base font-semibold">LinkedIn</p>
+                      <a href="https://www.linkedin.com/in/ignatus-anim-688a071a0/" target="_blank" className="text-blue-600 hover:underline">
+                        Connect with me
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="p-2 bg-gray-100 rounded-lg">
+                      <Github className="text-gray-700" />
+                    </div>
+                    <div>
+                      <p className="text-sm sm:text-base font-semibold">GitHub</p>
+                      <a href="https://github.com/ignatus-anim" target="_blank" className="text-gray-700 hover:underline">
+                        View my projects
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-600">
+                        <path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path>
+                        <path d="M8 9a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9z"></path>
+                        <path d="M14 9a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V9z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm sm:text-base font-semibold">Blog</p>
+                      <a href="https://medium.com/@ignatusa3" target="_blank" className="text-purple-600 hover:underline">
+                        Read my articles on Medium
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        )}
+        </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-100 mt-16">
-        <div className="container mx-auto px-6 py-8">
-          <div className="text-center text-gray-600">
-            <p>&copy; 2025 Ignatus Anim. All rights reserved.</p>
-            <p className="mt-2 text-sm">Built with React, TypeScript, and Tailwind CSS</p>
-          </div>
+      <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-8">
+        <div className="container mx-auto px-4 text-center text-gray-300">
+          <p>© 2025 Ignatus Anim. All rights reserved.</p>
+          <p className="text-sm mt-2 text-gray-400">Built with React & Tailwind CSS</p>
         </div>
       </footer>
     </div>

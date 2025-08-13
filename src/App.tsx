@@ -21,7 +21,7 @@ function App() {
     // Add subtitle
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text('DevOps Engineer & Cloud Specialist', 105, 28, { align: 'center' });
+    doc.text('Backend & DevOps Engineer', 105, 28, { align: 'center' });
     
     // Add contact info
     doc.setFontSize(10);
@@ -154,20 +154,11 @@ function App() {
       }
     };
 
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (isMobileMenuOpen && !target.closest('header')) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-
     window.addEventListener('scroll', handleScroll);
-    document.addEventListener('click', handleClickOutside);
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      document.removeEventListener('click', handleClickOutside);
     };
-  }, [isMobileMenuOpen]);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
@@ -207,36 +198,36 @@ function App() {
             
             {/* Mobile Menu Button */}
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              onClick={() => setIsMobileMenuOpen(prev => !prev)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors z-50"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-          
-          {/* Mobile Navigation */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-gray-100 py-4">
-              <nav className="flex flex-col gap-2">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => {
-                      scrollToSection(tab.id);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`px-4 py-3 rounded-lg transition-colors text-left ${
-                      activeTab === tab.id
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-600 hover:bg-gray-100'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </nav>
-            </div>
-          )}
+        </div>
+        
+        {/* Mobile Navigation */}
+        <div className={`md:hidden bg-white border-t border-gray-200 shadow-lg transition-all duration-300 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+          <div className="container mx-auto px-4 py-2">
+            <nav className="flex flex-col">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    scrollToSection(tab.id);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`px-4 py-3 text-left transition-colors border-b border-gray-100 last:border-b-0 ${
+                    activeTab === tab.id
+                      ? 'text-blue-600 bg-blue-50'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
       </header>
 
@@ -260,8 +251,8 @@ function App() {
                 </div>
               </div>
               
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ignatus Anim</h1>
-              <h2 className="text-xl sm:text-2xl md:text-3xl mb-6 sm:mb-8 text-gray-700">DevOps Engineer & Cloud Specialist</h2>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-relaxed py-2">Ignatus Anim</h1>
+              <h2 className="text-xl sm:text-2xl md:text-3xl mb-6 sm:mb-8 text-gray-700">Backend & DevOps Engineer</h2>
               <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
                 Passionate about building robust infrastructure and automating deployment pipelines. 
                 Specializing in cloud technologies, containerization, and CI/CD automation.

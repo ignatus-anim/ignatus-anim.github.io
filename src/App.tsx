@@ -270,13 +270,15 @@ function App() {
                 >
                   Get In Touch
                 </button>
-                <button 
-                  onClick={generateCV}
+                <a 
+                  href="https://drive.google.com/file/d/1az71LXlmbOAIKW7WAPEeFKubGTyCdDuv/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-6 sm:px-8 py-3 flex items-center justify-center gap-2 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-600 hover:text-white transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
                 >
                   <FileText size={16} className="sm:w-[18px] sm:h-[18px]" />
-                  Get CV
-                </button>
+                  View CV
+                </a>
               </div>
             </div>
           </div>
